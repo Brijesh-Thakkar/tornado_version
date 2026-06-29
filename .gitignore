@@ -3,6 +3,7 @@ credentials
 boto.cfg
 .env
 .env.*
+!.env.example
 wp-config.php
 
 # Certificates & Private Keys
