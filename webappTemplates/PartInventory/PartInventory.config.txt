@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Inventory 1", "Perpetual Inventory 1", "Inventory 2", "Perpetual Inventory 2", "Suppliers"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

@@ -1,0 +1,1 @@
+echo "America/Los_Angeles" | sudo tee /etc/timezone

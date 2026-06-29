@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Commerical Invoice 1", "Commerical Invoice 2", "Commerical Invoice 3","Sample"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "def"
+}

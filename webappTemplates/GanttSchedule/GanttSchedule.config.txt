@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Project 1", "Project 2", "Project 3", "Project 4","Project 5","Milestone-Week 1","Milestone-Week 2","Milestone-Week 3","Milestone-Week 4","Milestone-Week 5"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

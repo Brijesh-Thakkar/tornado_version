@@ -1,0 +1,5 @@
+{ 
+	"footers": ["History Form 1", "History Form 2", "History Form 3", "History Form 4","Medication Log 1","Medication Log 2","Medication Log 3"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

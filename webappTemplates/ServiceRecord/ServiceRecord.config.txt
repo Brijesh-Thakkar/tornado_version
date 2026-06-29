@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Type1", "Type2", "Type3", "Type4", "Type5", "Type6", "Type7", "Type8", "Type9"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "ghi"
+}

@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Summary", "Return On Investments 1", "Return On Investments 2", "Return On Investments 3"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

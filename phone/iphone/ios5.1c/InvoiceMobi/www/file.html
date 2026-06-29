@@ -1,0 +1,57 @@
+<!DOCTYPE html> 
+<html>
+<head>
+
+</head>
+<body> 
+
+<div data-role="page" data-theme="d" id="filePage">
+
+
+  	<div data-role="header" data-theme="a" class="ui-bar">
+	  <div class="ui-grid-b">
+	    <div class="ui-block-a">
+              <div data-role="button" data-mini="true"  data-inline="true" data-icon="home"
+		onclick="changePage('#indexPage');"><small>Home</small></div>
+	    </div>
+            <div class="ui-block-b">
+          </div>
+
+	   <div class="ui-block-c">
+
+	    </div>
+	  </div>
+	</div>
+
+
+   <div data-role="content" data-theme="d">
+     <div  data-role="button" onclick="saveCurrentMessage();"><small>Save</small></div>       		  
+      <div  data-role="button" onclick="saveAsMessage();"><small>Save As</small></div>       
+      <div  data-role="button" onclick="encryptFile();"><small>Save As Password Protected File</small></div>
+      <!-- <div data-role="button"
+      onclick="$.mobile.changePage('dialog.html')" >Save As</div> -->
+      <a href="list.html" data-role="button" ><small>List Files</small></a> 
+     <!-- <div  data-role="button" onclick=onSaveClicked();>Add Logo to iPhotos</div> -->
+       
+     <!--<button id="save" >Add Logo to iPhotos</button> -->
+       
+       <!--
+       
+      <div  data-role="button" onclick=dropboxHandler.saveToDropboxPage();>Save Files to Dropbox</div>  -->
+
+<!--       <div  data-role="button"
+  onclick=dropboxHandler.populateList();>List Files in Dropbox</div> -->
+
+ <!--       <a href="dropboxList.html" data-role="button" >List Dropbox Files</a>  -->
+       
+       <!--
+       <div data-role="button" data-inline="true" onclick="showAddLogo();"><h1>Add Logo</h1></div>
+       <div data-role="button" data-inline="true" onclick="showClearLogo();"><h1>Clear Logo</h1></div>
+       
+        -->
+   </div>
+</div>
+
+	
+</body>
+</html>

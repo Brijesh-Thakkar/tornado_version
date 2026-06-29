@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Record Chart 1", "Record Chart 2", "Timesheet", "Self-Evaluation","Performance Review","Change Record","Termination"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

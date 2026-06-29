@@ -1,0 +1,29 @@
+ 
+
+body
+{
+    font-size: 100.01%;
+    padding: 0px;
+	float: left !important;
+	margin:0 auto;
+	min-width:100% !important;
+    width:auto !important;
+	display:block;
+}
+
+ #wrapperwrapper{
+ 
+background: url(../images/thin.png) repeat-x;
+background-repeat:repeat-x;
+min-width:100%;
+min-height:100%;
+ display: block;
+ float:left;
+}
+
+.gallery-item { 
+
+width:200px;
+margin-right:155px;
+
+}

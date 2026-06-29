@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Earnings","Income","Net Income","Financial Calc","Marketing Calc","Sample Earnings","Sample Income","Taxable","Financial","Marketing"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

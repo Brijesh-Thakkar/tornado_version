@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Job Application", "History 1", "History 2", "History 3", "References","Cover Letter","Resume-Type1","Resume-Type2"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

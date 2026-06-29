@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% module Template("header-head.html") %}	
+
+<body>
+
+{% module Template("header-nav.html") %}
+
+   <!-- Page Content -->
+    <div class="container">
+
+        <!-- Page Heading/Breadcrumbs -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Business Apps
+                    <small></small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a href="index.html">Home</a>
+                    </li>
+                    <li class="active">Business Apps</li>
+                </ol>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <!-- Projects Row -->
+        <div class="row">
+            <div class="col-md-4 img-portfolio">
+                <a href="invoice-suite.html">
+                    <img class="img-responsive img-hover" src="{{ static_url("images/portfolio-business/invoicesuite.png") }}" alt="Invoice Suite">
+                </a>
+                <h3>
+                    <a href="invoice-suite.html">Invoice Suite</a>
+                </h3>
+                <p>Create and send Invoices on the go</p>
+            </div>
+            <div class="col-md-4 img-portfolio">
+                <a href="business-quote.html">
+                    <img class="img-responsive img-hover" src="{{ static_url("images/portfolio-business/quote.png") }}" alt="">
+                </a>
+                <h3>
+                    <a href="business-quote.html">Business Quote</a>
+                </h3>
+                <p>Create and send quotes on the go</p>
+            </div>
+            <div class="col-md-4 img-portfolio">
+                <a href="client-list.html">
+                    <img class="img-responsive img-hover" src="{{ static_url("images/portfolio-business/client.png") }}" alt="">
+                </a>
+                <h3>
+                    <a href="client-list.html">Client List</a>
+                </h3>
+                <p>Track your clients and put together a phone or address list for a specific marketing event</p>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <!-- Projects Row -->
+        <div class="row">
+            <div class="col-md-4 img-portfolio">
+                <a href="purchase-order.html">
+                    <img class="img-responsive img-hover" src="{{ static_url("images/portfolio-business/purchaseorder.png") }}" alt="">
+                </a>
+                <h3>
+                    <a href="purchase-order.html">Purchase Order</a>
+                </h3>
+                <p>Create and send purchase orders on the go</p>
+            </div>
+            <div class="col-md-4 img-portfolio">
+                <a href="business-ledger.html">
+                    <img class="img-responsive img-hover" src="{{ static_url("images/portfolio-business/ledger.png") }}" alt="">
+                </a>
+                <h3>
+                    <a href="business-ledger.html">Business Ledger</a>
+                </h3>
+                <p>Tracking your income and expenses</p>
+            </div>
+            <div class="col-md-4 img-portfolio">
+                <a href="checkbook-register.html">
+                    <img class="img-responsive img-hover" src="{{ static_url("images/portfolio-business/checkbook.png") }}" alt="">
+                </a>
+                <h3>
+                    <a href="checkbook-register.html">Check Book Register</a>
+                </h3>
+                <p>Record expenses and develop an aggregate balance</p>
+            </div>
+        </div>
+
+        <!-- Projects Row -->
+        <div class="row">
+            <div class="col-md-4 img-portfolio">
+                <a href="financial-statements.html">
+                    <img class="img-responsive img-hover" src="{{ static_url("images/portfolio-business/financialstat.png") }}" alt="">
+                </a>
+                <h3>
+                    <a href="financial-statements.html">Financial Statements</a>
+                </h3>
+                <p>Financial book keeping and future business projections</p>
+            </div>
+            <div class="col-md-4 img-portfolio">
+                <a href="service-business.html">
+                    <img class="img-responsive img-hover" src="{{ static_url("images/portfolio-business/service.png") }}" alt="">
+                </a>
+                <h3>
+                    <a href="service-business.html">Service Business Budget</a>
+                </h3>
+                <p>Develop a business budget comprising of your income, expenses and their sources</p>
+            </div>
+            <div class="col-md-4 img-portfolio">
+                <a href="account-balance.html">
+                    <img class="img-responsive img-hover" src="{{ static_url("images/portfolio-business/account.png") }}" alt="">
+                </a>
+                <h3>
+                    <a href="account-balance.html">Account Balance</a>
+                </h3>
+                <p>Track your expenses and account transactions</p>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <hr>
+
+       <!-- Footer -->
+	{% module Template("footer.html") %}
+	
+    </div>
+    <!-- /.container -->
+    {% module Template("footer-scripts.html") %}
+
+</body>
+
+</html>

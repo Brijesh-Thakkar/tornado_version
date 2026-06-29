@@ -1,0 +1,60 @@
+<html lang="en">
+<head>
+<title>Aspiring Apps</title>
+
+<link rel="stylesheet" href="{{ static_url("css/bootstrap.css") }}" type="text/css" />
+<link href="{{ static_url("css/bootstrap-responsive.css") }}" rel="stylesheet"/>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>   
+<style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 20px;
+     }
+   </style>
+
+
+
+</head>
+
+<body>
+
+    {% module Template("header.html",current=current) %}
+
+<div class="container">
+
+<div class="row">
+   <div class="span2">
+   </div>
+   <div class="span6">
+
+      <form class="well">
+
+         <hr>
+          <center><b>Signup</b></center>
+
+        <fieldset>
+          <label>Email</label>
+          <input class="span5" style="font-size:16px;height:28px;line-height:28px;" type="text"  name="email" placeholder="Email">
+          <label>Name</label>
+          <input class="span5" style="font-size:16px;height:28px;line-height:28px;" type="text" name="name" placeholder="Full Name">
+          <label>Password</label>
+          <input class="span5" style="font-size:16px;height:28px;line-height:28px;" id="pw1" type="password" name="pw" placeholder="Password">
+          <label>Confirm Password</label>
+          <input class="span5" id="pw2" style="font-size:16px;height:28px;line-height:28px;" type="password" name="cpw" placeholder="Password">
+          <br><br>
+          <button type="submit" class="btn btn-primary btn-block" onclick="return verifysignup();">Submit</button>
+        </fieldset>
+      </form>
+   </div>
+</div>
+
+      <hr>
+      {% module Template("footer.html") %}
+  </div>
+
+
+<script type="text/javascript" src="{{ static_url("js/bootstrap.min.js") }}"></script>   
+
+</body>
+</html>
+

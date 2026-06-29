@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet"  href="lib/jquery/jquery.mobile-1.4.4.min.css" />
+        <script type="text/javascript" src="lib/jquery/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="lib/jquery/jquery.mobile-1.4.4.min.js"></script>
+        
+    </head>
+    <body>
+        
+        <div data-role="page" id="listPage" data-cache="never" data-scroll='y' data-iscroll='enable'>
+            <div id="header" data-role="header" data-theme="b" style="padding-bottom:10px;background: #DDDDDD;">                <div class="ui-grid-b">
+                    <div class="ui-block-a">
+                        <div data-role="button" data-inline="true"  class="ui-btn ui-corner-all ui-btn-icon-left ui-icon-home" onclick="changePage('#indexPage');">Home</div>
+                    </div>
+                    <div class="ui-block-b">
+                        <div data-role="button" data-inline="true"
+                            class="ui-btn ui-corner-all ui-btn-icon-left ui-icon-back" onclick=" window.history.back();">Back</div>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="ui-block-c">
+                        <span id="listPage-fname" style="vertical-align:middle;position: absolute; right: 40px; top: .4em;"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div role="main" class="ui-content" id="content">
+                <div id="scroll-content">
+                    
+                    <ul data-role="listview"  id="filelist1" data-filter="true" data-filter-placeholder="Search files..." data-inset="true">
+                    </ul>
+                    
+                    <ul data-role="listview" data-scroll='y'  id="filelist" style="display:none">
+                        <li class="fieldcontain">
+                            <div class="ui-grid-b">
+                                <div class="ui-block-a">
+                                    <!--ProtectedImagePlace-->
+                                </div>
+                                
+                                <div class="ui-block-b">
+                                    <span style="vertical-align:middle;position: absolute;top:1.2em;"><h2>!--Template1--<h2></span>
+                                </div>
+                                <div class="ui-block-c">
+                                    <fieldset data-role="controlgroup"
+                                        data-type="vertical">
+                                        <button onclick="viewFile('!--Template3--');">Edit</button>
+                                        
+                                        <button onclick="deleteFileMessage('!--Template2--')">Delete</button>
+                                    </fieldset>
+                                </div>
+                                
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                
+            </div>
+            
+            <div id="footer"></div>
+        </div>
+        
+        
+    </body>
+</html>

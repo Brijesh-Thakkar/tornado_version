@@ -1,0 +1,43 @@
+# Credentials & Configuration
+credentials
+boto.cfg
+.env
+.env.*
+wp-config.php
+
+# Certificates & Private Keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Python Artifacts
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Temporary & Backup Files
+*~
+#*#
+.#*
+*.bak
+*.orig
+*.tmp
+
+# IDE & Environment Files
+.vscode/
+.idea/
+.claude/
+
+# System Files
+.DS_Store
+.DS_Store*
+Thumbs.db
+
+# Storage & Databases
+local_storage/
+*.sqlite
+*.db
+*.tar.gz

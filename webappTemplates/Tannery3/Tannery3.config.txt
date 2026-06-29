@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Wet Blue/Raw Skins 1", "Chemical Store 1","Wet Blue/Raw Skins 2", "Chemical Store 2", "Sample Wet Blue Store", "Sample Chemical Store"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

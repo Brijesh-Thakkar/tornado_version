@@ -1,0 +1,55 @@
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a href="/" class="brand">Aspiring Apps</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+             <li><a href="/">About</a></li>
+              <li><a href="/">Blog</a></li>
+              <li><a href="/">Contact</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Products <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li class="nav-header">Business</li>
+                  <li><a href="#">Invoice</a></li>
+                  <li><a href="#">Ledger</a></li>
+                  <li class="divider"></li>
+                  <li class="nav-header">Finance</li>
+                  <li><a href="#">Household Budget</a></li>
+                  <li><a href="#">Checkbook Register</a></li>
+                </ul>
+              </li>
+	      <li>
+          <ul class="nav actions">
+
+      {% if current["name"] == "" %} 	     
+                  <li><a href="/web/login">Log In</a></li>
+      {% end %}
+      {% if current["name"] != "" %} 
+             <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>{{ current["name"] }}</b> <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/web/usersettings">Settings</a></li>
+                  <li class="divider"></li>
+                 <li><a href="/web/logout">Logout</a></li>
+                </ul>
+              </li>
+	      
+	      <li><a href="/web/usersettings">Settings&nbsp;<i class="icon-cog icon-white"></i></a></li>
+
+      {%  end %}
+
+
+            </ul>
+	    <li><a href="/web/signup">Sign Up</a></li>
+	   </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>

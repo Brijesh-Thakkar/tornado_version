@@ -1,0 +1,4 @@
+1. While importing the xlsx and xls file the colours do not get uploaded, the export takes place correctly (the xlsx and xls files are ok)
+2. The csv format doesn't upload the colours (Well, it is not expected to)
+3. The html file doesn't get uploaded correctly
+4. The fonts don't saved in the xls files

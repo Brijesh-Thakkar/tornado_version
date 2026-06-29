@@ -1,0 +1,23 @@
+
+{% extends "base.html" %}
+{% block head %}
+{% end %}
+
+{% block body %}
+<form method="POST" action="/login">
+<center>
+
+ Email: <input type="text" name="email" size="20" /><br />
+ Password:<input type="password" name="password" size="15" /><br />
+  <br>
+ <input type="submit" value="Login" />
+    <br>
+    <br>
+    <a href="/register">Register</a>&nbsp;&nbsp;<a
+    href="/lostpw">Forgot Password</a>
+  </div>
+  </center>
+</form>
+
+{% end %}
+

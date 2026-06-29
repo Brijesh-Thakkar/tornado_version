@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Help", "Sample", "Checkbook Register"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "jkl"
+}

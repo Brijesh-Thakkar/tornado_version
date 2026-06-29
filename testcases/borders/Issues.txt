@@ -1,0 +1,7 @@
+Issues with including border elements in the spreadsheet file : 
+
+1. Default row height in the xls format is different from the default row height in the other formats
+2. HTML format doesn't imported properly it just reads the file
+3. HTML format has a bad style for the table since it manually draws cells and  then tries filling them in
+4. CSV file does not get exported properly (Since there is no provision in the CSV file for including borders)
+5. The pdf conversion doesn't look very good

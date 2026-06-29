@@ -1,0 +1,608 @@
+<html>
+<head>
+	<title>Aspiring Investments Corp</title>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="bootstrap/css/carousel.css">
+  <link rel="stylesheet" href="bootstrap/css/logo-nav.css">
+  <link rel="stylesheet" href="bootstrap/css/sticky-footer-navbar.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <link href="bootstrap/css/business-frontpage.css" rel="stylesheet">
+		<script src="bootstrap/js/mdetect.js" type="text/javascript"></script>
+	
+		<script src="bootstrap/js/jquery.bpopup.js" type="text/javascript"></script>
+		<script src="bootstrap/js/jquery.bpopup.min.js" type="text/javascript"></script>
+	
+	<script>
+	var time = null;
+	var appid=4;
+	$('document').on("pagecreate","#swipe",function(){
+  $("#swipe").on("swipeleft",function(){alert('yahoo!!');});});
+	var page= 0;
+	var appioslinks = ['invoice-suite/id465587615?ls=1&mt=8','check-book-register/id488517738?mt=8','business-ledger/id505092339?ls=1&mt=8','business-quote/id477522727?ls=1&mt=8','financial-statements/id535113504?ls=1&mt=8','household-budget/id470786282?ls=1&mt=8','home-maintenance-planner/id588127107?ls=1&mt=8','fitness-planner/id600477433?ls=1&mt=8','purchase-order/id488522018?ls=1&mt=8','services-business-budget/id586654196?ls=1&mt=8','the-ledger/id562917620?ls=1&mt=8','client-list/id685978756?ls=1&mt=8','cash-receipt/id498750645?ls=1&mt=8','2014-calendar-memos/id687614131?ls=1&mt=8','no link available','expense-balance/id503782694?ls=1&mt=8','monthly-budget-app/id626186401?ls=1&mt=8','the-portfolio-tracker/id585975223?ls=1&mt=8','stock-value/id521528562?ls=1&mt=8','savings-passbook/id499527299?ls=1&mt=8','networth-suite/id468335241?ls=1&mt=8','rent-receipt/id498753958?ls=1&mt=8','not available','not available','vacation-planner/id481664877?ls=1&mt=8','party-plan/id488504932?ls=1&mt=8','shopping-quicklists/id472174645?ls=1&mt=8','home-inventory-app/id620962476?ls=1&mt=8','recipe-planner/id684686678?ls=1&mt=8','christmas-gift-budget/id488539102?ls=1&mt=8','credit-cards-payoff-calculator/id597354488?ls=1&mt=8','holiday-budget/id483706193?ls=1&mt=8',];
+	var appandroidlinks = ['invoice','checkbook','businessledger','businessquote','financialstatements','homebudget','homemaintenanceseven','fitnessplannertab'];
+	var appamazonlinks = ['http://www.amazon.com/Invoice-Suite-Kindle-Tablet-Edition/dp/B007FJ0XRO/ref=sr_1_4/182-8382484-5085530?s=mobile-apps&ie=UTF8&qid=1402394333&sr=1-4','http://www.amazon.com/Check-Book-Kindle-Tablet-Edition/dp/B007BGTS18/ref=sr_1_2?s=mobile-apps&ie=UTF8&qid=1402394741&sr=1-2'];
+	var pagename = ['Daily Selling Apps','Business Apps','Personal Finance Apps','Life Style Apps'];
+	var appnames = ['Invoice','Check Book Register' ,'Business Ledger','Business Quote','Financial Statements','Household Budget','Home Maintenance Planner','Fitness Planner','Purchase Order','Service Business Budget','Business Ledger','Client List',"Cash Receipt",'Calendar Memos','Sales Channel Analysis','Expense Balance','Monthly Budget','Portfolio Tracker','Stock Value','Savings Passbook','NetWorth Suite','Rent Receipt','Bills Tracker','2014 Piggy Bank','Vacation Planner','Party Planner','Shopping Quicklists','Home Inventory','Recipe Planner','Christmas Gift Budget','Credit Card Pay Off Calculator','Holiday budget'];
+	var description = ["If you're a small business owner or a freelancer, who wants to send invoices while you're on the job, Invoice Suite is an easy to use app for you. Invoice Suite allows you to manage and send estimates and invoices on the go.","If you are just getting started managing your finances or have a new business and need a quick solution for tracking expenses, Check Book Register is the best app for you. You can record expenses, and develop an aggregate balance.","If you are just getting started managing your finances or have a new business and need a quick solution for tracking your income, expenses and their sources,this is the best app.Record expenses and income,develop an aggregate balance.","If you're a small business owner or a freelancer, who wants to send quotes, project bids and estimates while you're on the job,this app helps you. Business Quote for iPad allows you to manage and send estimates and quotes on the go","If you are a business owner, financial planner, accountant, treasurer or a financial controller for a small or mid-tier enterprise, and are looking for a cost effective, self-contained application for financial book keeping and future business projections, Financial statements app is a good choice for you.","Household Budget does it for you. This simple app lets you create the budgeted entries for your income and expenses including but not limited to housing, food, transportation, clothes and personal services, etc on a monthly and yearly basis.","This simple app helps you maintain your home within a budget of time and resources, and helps you plan the maintenance on a monthly, quarterly and yearly basis.","Fitness planner app enables you to keep a track of your exercise routine on a monthly and weekly basis. A meal planner and a monthly calendar sheet of the current month are provided along with the exercise log sheets.","Purchase Order application is an easy to use customizable solution for your company. Purchase Order app for ipad provides one of the quickest solutions for creating, emailing and printing a purchase order. ","Develop a business budget comprising of your income and expenses and record its sources.","Manage your income and expenses and develop an aggregate balance.","Organise the details of your clients like company, address , phone and fax .","Manage and send cash receipts quickly.","Prioritise and track events and your important personal, business and medical memos and notes.","Model your sales distribution channels for your enterprise and summarize all the details.","Keep a track of your expenses and monitor the status of your project.Visualise expenses incurred against the budget allocated.","Track your account transactions along with the income, expenses, goals  and account statements.","Organize and keep a track of all the stocks and funds.","Model your investment decisions using proven financial modelling strategies. Visualise the price predicted vs current stock price of the company.","Track your bank transactions on a savings account and maintain a steady account balance staying within the budget.","Analyze the  assets you own, liabilities you owe and your financial net worth using Networth Suite app.","Manage and send rent receipts very easily.","Track your Bills and their payment dates.","Track your monthly allowance, expenses and savings.","Plan your budget, activities, reservations, emergency contacts and vacation pack in no time.","Its a simple app focused on providing you a step by step procedure to organize parties in a quick and easy to use checklist format. In addition, it helps you track your guest contacts and invitations, party activities, and most importantly party budget giving you the difference between actual and estimated costs."," This app helps you to manage, organize and e-mail your shopping lists on the go. The intuitive interface allows you to produce shopping lists in just a minute wherever you may be. The app provides you with a range of list styles to choose from.","This simple app helps you keep a track of the inventory information including but not limited to category, description, purchase date and place, model and serial number, price, warranty, current condition and value. The inventory is classified on the basis of where it located at the house, and the total estimated value of all the items in that location is added.","The Recipe Planner app enables you to record your favourite recipes and organise your kitchen supplies and in a convenient manner. It also helps you to set up a kitchen budget and manage your grocery shopping with ease.","This simple app lets you create the budgeted entries for your gift expenses for family, friends, colleagues, charitable donations, neighbors, service personnel and teachers.","Credit Card Payoff Calculator lets you escape the number crunching by helping you to calculate the payment required to pay off your credit card debt in a specified number of months, or calculate how long it will take to pay off your card given a specific monthly payment.","Holiday Budget does it for you. This simple app lets you create the budgeted entries for your expenses including but not limited to gifts, cards, decorations, packaging, shipping, holiday food, entertainment, travel, and their sub-categories."];
+	pop = function(i){
+		appid = i;
+		
+		document.getElementById('app_name').innerHTML = appnames[i+8*page];
+		document.getElementById('app_image').src="icons/app"+(i+8*page)+".png";
+		console.log(appnames[i+8*page]);
+		document.getElementById('description').innerHTML = description[i+8*page];
+		$('#element_to_pop_up').bPopup();
+	};
+	
+	getstore = function(){
+	if(DetectIos()){
+		window.open('https://itunes.apple.com/us/app/'+appioslinks[appid+8*page]);
+		}
+		
+	if(DetectAndroid()){
+		window.open('https://play.google.com/store/apps/details?id=com.aspiring.'+appandroidlinks[appid+8*page]);
+		}
+		else{
+		$('#gp').fadeIn(1500);
+		$('#ap').fadeIn(1500);
+		}
+	}
+	rightarrow = function(){
+	$('#workhead').fadeOut();
+	$('#workhead').fadeIn();
+	i = 1;
+	while(i<9){
+	$('#app'+i).fadeOut();
+	$('#app'+i).fadeIn();
+	i=i+1;
+	}
+	if(page==3){
+	page=0;}
+	else{
+	page = page+1;}
+	console.log(page);
+	setTimeout(function(){document.getElementById('workhead').innerHTML=pagename[page];$('#workhead').fadeIn();
+	io = 1;
+	while(io<9){
+	document.getElementById('app'+io).src = "icons/app"+(io+8*page-1)+".png";$('#app'+io).fadeIn();
+	io=io+1;
+	}
+	},500);
+	}
+	leftarrow = function(){
+	
+	$('#workhead').fadeOut();
+	$('#workhead').fadeIn();
+	i = 1;
+	while(i<9){
+	$('#app'+i).fadeOut();
+	$('#app'+i).fadeIn();
+	i=i+1;
+	};
+	if(page==0){
+	page=3;}
+	else{
+	page = page-1;}
+	console.log(page);
+	setTimeout(function(){document.getElementById('workhead').innerHTML=pagename[page];$('#workhead').fadeIn();
+	io = 1;
+	while(io<9){
+	document.getElementById('app'+io).src = "icons/app"+(io+8*page-1)+".png";$('#app'+io).fadeIn();
+	io=io+1;
+	}
+	},500);
+	}
+	featuresclick = function(x){
+	if(x==0){
+	document.getElementById('letstry').style.background="url(top-icons.png) no-repeat 25px -63px";
+	document.getElementById('wassup').style.borderStyle="groove";
+	window.open("https://play.google.com/store/apps/developer?id=Aspiring+Investments+Corp");
+	document.getElementById('wassup').style.borderColor="#FAC81B";
+	console.log("yeah");
+	setTimeout(function(){document.getElementById('letstry').style.background="url(top-icons.png) no-repeat 25px 3px";
+	document.getElementById('wassup').style.borderStyle="";
+	document.getElementById('wassup').style.borderColor="";}, 2000);
+	}
+	if(x==1){
+	document.getElementById('wassup1').style.borderStyle="groove";
+	window.open("https://itunes.apple.com/us/artist/aspiring-investments-corp/id465587618");
+	document.getElementById('wassup1').style.borderColor="#FAC81B";
+	document.getElementById('letstry1').style.background="url(top-icons.png) no-repeat -41px -63.5px";
+	console.log("yeah");
+	setTimeout(function(){document.getElementById('letstry1').style.background="url(top-icons.png) no-repeat -41px 3px";document.getElementById('wassup1').style.borderStyle="";
+	document.getElementById('wassup1').style.borderColor="";}, 2000);
+	}
+	if(x==2){
+	document.getElementById('wassup2').style.borderStyle="groove";
+	window.open("http://www.amazon.com/s/ref=bl_sr_mobile-apps?_encoding=UTF8&field-brandtextbin=Aspiring%20Investments%20Corp&node=2350149011");
+	document.getElementById('wassup2').style.borderColor="#FAC81B";
+	document.getElementById('letstry2').style.background="url(top-icons.png) no-repeat  -115px -63px";
+	console.log("yeah");
+	setTimeout(function(){document.getElementById('letstry2').style.background="url(top-icons.png) no-repeat -115px 3px";document.getElementById('wassup2').style.borderStyle="";
+	document.getElementById('wassup2').style.borderColor="";}, 2000);
+	}
+	if(x==3){
+	document.getElementById('wassup3').style.borderStyle="groove";
+	window.open("http://apps.samsung.com/mercury/topApps/getSellerList.as");
+	document.getElementById('wassup3').style.borderColor="#FAC81B";
+	document.getElementById('letstry3').style.background="url(top-icons.png) no-repeat  -193px -63px";
+	console.log("yeah");
+	setTimeout(function(){document.getElementById('letstry3').style.background="url(top-icons.png) no-repeat -193px 3px";document.getElementById('wassup3').style.borderStyle="";
+	document.getElementById('wassup3').style.borderColor="";}, 2000);
+	}
+	}
+	</script>
+	
+
+  <style>
+  body{
+    font-family: 'Open Sans', sans-serif;
+    background-color:#ffffff;
+    overflow-x:hidden;
+  }
+
+    .creative {
+        color: #F56977;
+    }
+
+    /*.container {
+        background-color: black;
+    }*/
+
+ /*   .carousel-control.left, .carousel-control.right { 
+      background: none !important; 
+      filter: progid:none !important; 
+      background-color: white !important; 
+    }*/
+/*
+    .carousel { 
+        background-color: white; 
+    }*/
+
+    .promotions{
+      padding-top: 2%;
+      position:relative;
+      background-color: white;
+      }
+
+    .promotions h3{
+        text-align: center;
+        color: gray;
+        font-weight: 700;
+        font-size: 2em;
+        padding: 0 0 0.5em 0.5em;
+      }
+    .promot img{
+        position:relative;
+        width:100%;
+        padding:0;
+      }
+
+    .contact{
+      margin-top: 5%;
+      position:relative;
+      }
+
+    .contact h3{
+        text-align: center;
+        color: gray;
+        font-weight: 700;
+        font-size: 2em;
+        padding: 0 0 0.5em 0.5em;
+      }
+
+    .contact-map{
+      position:absolute;
+      width: 100%;
+      background-color:white;
+    }
+
+    #socialagain {
+position: left;
+  z-index: 99;
+  background: #fff;
+  padding: 0 2em 1em 2em;
+  width: 100%;
+  left: 25%;
+  top:25%;
+}
+#socialagain p{
+  color: #3D3D3D;
+  text-align: center;
+  font-size: 1em;
+}
+#socialagain label{
+  color: #3D3D3D;
+  display: block;
+  text-align: center;
+  padding: 0.5em 0;
+  font-size: 1.3em;
+  font-weight: 400;
+}
+
+#socialagain h5{
+text-align: center;
+  color: #ECBA0B;
+  font-weight: 700;
+  font-size: 2em;
+  padding: 1.5em 0 0.5em;
+}
+#socialagain span {
+  font-weight: 400;
+  padding-right: 0.3em;
+}
+#socialagain i{
+  height: 8px;
+  width: 120px;
+  display: block;
+  background: #FAC81B;
+  position: absolute;
+  top: 0px;
+  left: 37.8%;
+}
+
+  </style>
+</head>
+<body>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "http://connect.facebook.net/en_US/sdk.js#xfbml=1&appId=254256968116592&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="moreapps" style="display:none;color:black;">
+	<div id = "lol"style = "min-height:650px;width:850px;background:#FFFFFF;" >
+	<h5 style="font-weight: 700;
+font-size: 2em;
+text-align: center;
+color: #ECBA0B;padding-top:30px;"> More App Stores</h5>
+	<div id="blackberry" style="width:250px;padding-left:50px;padding-top:75px;text-align:center;">
+	<a href="http://appworld.blackberry.com/webstore/vendor/89750/?lang=en&countrycode=IN" target="blank"><img src="images/blackberry-icon.png" style="width:150px;"/></a>
+	<h4 style="font-weight:bold;color:black;"><b>BlackBerry Store</b></h4>
+	<p style="text-align:center;color:black;">We have a suite of enterprise and consumer apps on blackberry store.And more to come.</p>
+	  <p><a class="btn btn-default" href="#" role="button">Read More &raquo;</a></p>
+        
+	</div>
+	<div id="nook" style="width:250px;padding-left:50px;padding-top:100px;text-align:center;position:relative;top:-411px;left:250px;">
+	<a href="http://www.barnesandnoble.com/c/aspiring-investments-corp." target="blank"><img src="images/nook.png" style="width:150px;"/></a>
+	<h4 style="font-weight:bold;"><b>Nook Store</b></h4>
+	<p style="text-align:center;">We have a suite of enterprise and consumer apps on Barnes And Nobles store.And more to come.</p>
+	  <p><a class="btn btn-default" href="#" role="button">Read More &raquo;</a></p>
+        
+	</div>
+	</div>
+	</div>
+<div id="element_to_pop_up" style = " display:none;">
+	<div id = "lol"style = "color:black;min-height:350px;width:350px;background:#FFFFFF;" >
+	<img src="icons/app0.png" id = "app_image" style="
+    width: 118px;
+    height: 92px;
+">
+	<h1  id = "app_name" style = "color:#000000;text-align: center;
+position: relative;
+left: 30%;
+width: 71%;
+top: -90px;">Title</h1>
+	<button type="button" onclick = "getstore();"class="btn btn-success" style="position: relative;
+left: 30%;
+top: -50px;">Get App on your device</button>
+<button type="button" id = "gp" onclick = "window.open('https://play.google.com/store/apps/details?id=com.aspiring.'+appandroidlinks[appid+8*page]);"class="btn btn-success" style="display:none;position: relative;
+top: 0;">Google Play Store</button>
+<button type="button" onclick = "window.open('https://itunes.apple.com/us/app/'+appioslinks[appid+8*page]);"class="btn btn-success" style="position: relative;
+left: 5%;
+top: -34.5px;display:none;" id = "ap">Apple App Store</button>
+	<p id = "description">your description goes here</p>
+	</div>
+	</div>
+<!-- White-blue Nav
+<div class="header">
+	<ul class="nav nav-pills">
+	  <li class="active"><a href="#home">Home</a></li>
+	  <li><a href="#features">Features</a></li>
+	  <li><a href="#work">Work</a></li>	  <li><a href="#">Promotions</a></li>
+	  <li><a href="#contact">Contact</a></li>
+	  <li><a href="#">News</a></li>
+	</ul>
+</div>
+-->
+
+<!-- Navbar inverse with 
+
+ inserted manually
+<div class="navbar-wrapper">
+      <div id="logoofcompany"><img src="images/logo.png" style="max-width:80%; "></div>
+      <div class="container" style="padding-left:10%; padding-right:10%;">
+
+        <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#"></a>
+            </div>
+            <div class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#work">Work</a></li>   <li><a href="#">Promotions</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#">News</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+-->
+
+<!-- Logo-nav taken from the internet-->
+
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#" style="">
+                    <img src="images/logo.png" alt="" id="company" style="max-width:70%;">
+                </a>
+            </div>
+ <script>
+	console.log("dude");
+	
+	if(DetectIphone()){
+	document.getElementById("company").style.position="relative";
+	document.getElementById("company").style.top="-40px";
+	};
+	
+	if(DetectIpod()){
+	document.getElementById("company").style.position="relative";
+	document.getElementById("company").style.top="-40px";
+	};
+	</script>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#work">Work</a></li>   
+                    <li><a href="#promotions">Promotions</a></li>
+                    
+                    <li><a href="#feed">Twitter</a></li>
+                    <li><a href="#facebookfeed">Facebook</a></li>
+                    
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="http://www.tickervalue.com/2013/12/24/save-well-in-2014-with-home-budget-mobi/">News</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+    </nav>
+
+<!-- Carousel
+    ================================================== -->
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+      </ol>
+      <div class="carousel-inner">
+        <div class="item active">
+          <img data-src="holder.js/900x500/auto/#777:#7a7a7a/text:First slide" alt="">
+          <img src="" width='100%'>
+          <div class="container">
+            <div class="carousel-caption">
+              <h1 style="color:gray;">We Design <label class="creative">Creative Applications</label> For Enterprises<br> And Users</h1>
+              <p style="text-shadow:0 0px 0px rgba(0,0,0,.6);color:black;"><span><i>We are a young start-up with a simple goal help enterprises and users to learn and manage their investments, resources and time productively, which could enable them to achieve their short term and long term vision and goals.</i></span></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img data-src="holder.js/900x500/auto/#666:#6a6a6a/text:Second slide" alt="">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1 style="color:gray;">We Design <label class="creative">Creative Applications</label> For Enterprises <br> And Users</h1>
+              <p style="text-shadow:0 0px 0px rgba(0,0,0,.6);color:black;"><span><i> We build software products on tablet devices that are elegant in design and simple to use for our customers. We Identify Needs And Provide Solutions.</i></span></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img data-src="holder.js/900x500/auto/#555:#5a5a5a/text:Third slide" alt="">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1 style="color:gray;">We Design <label class="creative">Creative Applications</label> For Enterprises<br> And Users</h1>
+              <p style="text-shadow:0 0px 0px rgba(0,0,0,.6);color:black;"><span> <i>Some of our daily selling apps are Household Budget, Invoice Suite, Checkbook Register, Business Ledger, Vacation Planner, Fitness Planner, Financial Statments and Stock Value.</i></span></p>            </div>
+          </div>
+        </div>
+      </div>
+      <a class="left carousel-control" style="background:white;" href="#myCarousel" data-slide="prev"><span style = "color:black;"class="glyphicon glyphicon-chevron-left"></span></a>
+      <a class="right carousel-control" style="background:white;" href="#myCarousel" data-slide="next"><span style = "color:black;" class="glyphicon glyphicon-chevron-right"></span></a>
+    </div><!-- /.carousel -->
+
+	    <div class="row" id = "features"style="background:#E66768;">
+			<h1 class="tagline" style="padding:30px;text-align:center;"><span>Check Out  </span>Features</h1>
+<div style="width:150px;position:relative;margin-left:auto;">
+<button class="btn btn-inverse btn-large" style="background:#35DB56;" onclick="$('#moreapps').bPopup();"><i class="icon-white icon-th-list"></i> More Apps</button>
+						</div>
+        <div class="col-lg-4" style ="padding:25px;text-align:center; color:#FFFFFF;">
+		<div onclick ="featuresclick(0); " id="wassup"  style = "height:140px;width:140px;background:#DD5E5F;border-radius:50%;display: inline-block;float:none;padding:30px;">
+	
+		<div id="letstry" style="background:url(top-icons.png) no-repeat 25px 3px; height:65px;width:65px;">
+          </div></div>
+          <h2>Google</h2>
+          <p>We have 400+ apps available on google play store. And, more to come.</p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4"style ="padding:25px;text-align:center;color:#FFFFFF;">
+		<div onclick ="featuresclick(1);"id="wassup1"style = "height:140px;width:140px;background:#DD5E5F;border-radius:50%;display: inline-block;float:none;padding:30px;">
+		<div id="letstry1" style="background:url(top-icons.png) no-repeat -41px 3px; height:65px;width:65px;">
+          </div></div>
+		  <h2>Apple</h2>
+          <p>We have 400+ apps available on Apple app store. And, more to come.</p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4"style ="padding:25px;text-align:center;color:#FFFFFF;">
+		<div onclick ="featuresclick(2);" id="wassup2"style = "height:140px;width:140px;background:#DD5E5F;border-radius:50%;display: inline-block;float:none;padding:30px;">
+		<div id="letstry2" style="background:url(top-icons.png) no-repeat -115px 3px; height:65px;width:65px;">
+          </div></div>
+		<h2>Amazon Store</h2>
+          <p>We have 400+ apps available on Amazon app store. And, more to come.</p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+		<div class="col-lg-4"style ="padding:25px;text-align:center;color:#FFFFFF;">
+		<div onclick ="featuresclick(3);" id="wassup3"style = "height:140px;width:140px;background:#DD5E5F;border-radius:50%;display: inline-block;float:none;padding:30px;">
+		<div id="letstry3" style="background:url(top-icons.png) no-repeat -193px 3px; height:65px;width:65px;">
+          </div></div>
+		<h2>Samsung Store</h2>
+          <p>We have 400+ apps available on Samsung store. And, more to come.</p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+      </div><!-- /.row -->
+	  
+	  <div class="row" id = "work"style="background:white;">
+
+            <div class="col-lg-12" style="padding-bottom:15px;">
+                <h1 id = "workhead" style="color:black;text-align:center;"class="page-header">Daily Selling Apps</h1>
+						<div id="rightarrow" onclick="rightarrow();"width="100%" height="100%"  style="float: right;
+width: 18%;
+height: 40px;
+right: 30%;
+background: url(rightarrow.png) no-repeat ;
+position: relative;"></div>
+				<div id="leftarrow" onclick = "leftarrow();"width="100%" height="100%" style="position: relative;
+left: 30%;
+width: 18%;
+height: 40px;
+background: url(leftarrow.png) no-repeat 10px;"></div>
+			
+			</div>
+			<div id = "swipe">
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb" style="border-color:#FFFFFF;border-style:bold;" onclick = "pop(0);">
+                
+                    <img id = "app1"class="img-responsive" src="icons/app0.png">
+               
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb" onclick = "pop(1);">
+                    <img id = "app2"class="img-responsive" src="icons/app1.png">
+                
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb"  onclick = "pop(2);">
+                   <img id = "app3"class="img-responsive" src="icons/app2.png">
+                
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb" onclick = "pop(3);">
+                    <img id = "app4"class="img-responsive" src="icons/app3.png">
+                
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb" onclick = "pop(4);">
+                    <img id = "app5"class="img-responsive" src="icons/app4.png">
+                
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb" onclick = "pop(5);">
+                    <img id = "app6"class="img-responsive" src="icons/app5.png">
+                
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb" onclick = "pop(6);">
+                    <img id = "app7"class="img-responsive" src="icons/app6.png">
+                
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb" onclick = "pop(7);">
+                    <img id = "app8"class="img-responsive" src="icons/app7.png">
+                
+            </div>
+           </div>
+        </div>
+	
+
+<div id="promotions" class = "promotions">
+  <h3 style=""><span id ="letstry">PROMOTIONS</h3><span>
+  <div class="promot">
+      <img src="images/1.jpg">
+  </div>
+</div>
+<div id="feed" class="feed" style="text-align:center;">
+<div id="tweets" style="" >
+					<a class="twitter-timeline"  href="https://twitter.com/aspiringapps" data-widget-id="481783240479342596">Tweets by @aspiringapps</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+
+				</div>
+</div>
+<div id = "facebookfeed" class="facebookfeed" style="text-align:center;">
+<h1 style="color:black;">Facebook Feed</h1>
+<div class="fb-like-box" data-href="https://www.facebook.com/?q=#/profile.php?id=145161762243098&amp;ref=br_tf" data-width="100%" data-height="100%" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="true" data-show-border="true"></div>
+</div>
+<div class="contact" id="contact">
+<center>
+  <div id = "socialagain">
+  
+    <h3><span>Contact Us</span> Now</h3>
+    <p>Sunnyvale , California ,USA <br> New Delhi ,India</p>
+    <label> Skype ID : aspiring.investments</label>
+    <label>Email us <br>marketing@tickervalue.com <br> enroll@tickervalue.com</label>
+    <a href="http://tickervalue.com"target = "blank" style = "color: #E66768; text-align: center; display: block; padding-bottom: 1em;">tickervalue.com</a>
+  <center>
+  <a href = "https://www.facebook.com/AspiringApps" target = "blank"><img id="facebook" src ="images/fbicon.png" width = "15%" onclick = ""/></a>
+  <a href = "https://twitter.com/aspiringapps" target = "blank"><img id="facebook" src ="images/twittericon.png" width = "15%" onclick = ""/></a>
+  <a href = "https://www.linkedin.com/company/aspiring-investments-corp" target = "blank"><img id="facebook" src ="images/linkedin.png" width = "15%" onclick = ""/></a>
+  <a href = "http://www.youtube.com/user/aspiringinvestments/featured" target = "blank"><img id="facebook" src ="images/youtubeicon.png" width = "15%" onclick = ""/></a>
+  <a href = "http://www.pinterest.com/aspiringapps/" target = "blank"><img id="facebook" src ="images/pinterest.png"  width = "15%" onclick = ""/></a>
+  </center>
+  
+          </div>
+  </center>
+       <!-- <div class="contact-map">
+          <center>
+            <left>
+            <div style="padding-right:5%; padding-left:10%; width:30%; float:left;">
+              <iframe style="width:100%; height: 50%;" src="https://maps.google.co.in/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=United+States+California+Sunnyvale&amp;aq=0&amp;oq=u&amp;sll=14.42896,79.980705&amp;sspn=0.249702,0.41851&amp;ie=UTF8&amp;hq=&amp;hnear=United+States&amp;ll=37.09024,-95.712891&amp;spn=12.397063,26.784668&amp;t=m&amp;z=6&amp;output=embed"></iframe>
+            </div>
+            </left>
+
+            <right>
+            <div style="width:30%; padding-right:10%; float:right;">
+              <iframe style="width:100%; height: 50%;" src="https://maps.google.co.in/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=India+New+Delhi&amp;aq=0&amp;oq=u&amp;sll=14.42896,79.980705&amp;sspn=0.249702,0.41851&amp;ie=UTF8&amp;hq=&amp;hnear=India&amp;ll=37.09024,-95.712891&amp;spn=12.397063,26.784668&amp;t=m&amp;z=6&amp;output=embed"></iframe>
+            </div>
+            </right>
+          </center>
+        </div> -->
+</div>
+
+<!--
+<div class="footer">
+    <div class="container">
+        <p class="text-muted">Place sticky footer content here.</p>
+        <div class="wrap">
+
+        </div>
+    </div>
+</div>
+-->
+
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+<script>
+    $('.navbar-collapse a').click(function(){
+        $(".navbar-collapse").collapse('hide');
+    });
+</script>
+
+</body>
+</html>

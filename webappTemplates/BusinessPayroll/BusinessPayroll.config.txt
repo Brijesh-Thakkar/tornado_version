@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Payroll-Taxes", "Payroll-Deduction", "Calculator", "Paysubs"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

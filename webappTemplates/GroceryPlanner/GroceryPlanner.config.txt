@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Grocery Food 1", "Grocery Food 2", "Grocery Supplies", "Shopping List 1","Shopping List 2","Shopping List 3"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

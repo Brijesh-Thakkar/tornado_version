@@ -1,0 +1,45 @@
+<html lang="en">
+<head>
+<title>Aspiring Apps</title>
+
+<link rel="stylesheet" href="{{ static_url("css/bootstrap.css") }}" type="text/css" />
+<link href="{{ static_url("css/bootstrap-responsive.css") }}" rel="stylesheet"/>
+<script type="text/javascript" src="{{ static_url("js/jquery-latest.js") }}"></script>   
+<style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 20px;
+     }
+   </style>
+
+
+
+</head>
+
+<body>
+
+
+    {% module Template("header.html", current=current) %}
+
+ <div class="container">
+    
+	
+     <!-- Example row of columns -->
+      <div class="row">
+        <div class="span4">
+        </div>
+        <div class="span4">
+        </div>
+        <div class="span4">
+        </div>
+      </div>
+
+      <hr>
+      {% module Template("footer.html") %}      
+  </div>
+
+
+<script type="text/javascript" src="{{ static_url("js/bootstrap.min.js") }}"></script>   
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="span-7">
+<hr class="space">
+</div>
+    <div class="span-8" align="center">
+<hr class="space">
+<hr class="space"
+<hr class="space">
+<hr class="space">
+<hr class="space">
+    <h3>Enter ticker symbol</h3>
+    <FORM ACTION="/templates" METHOD="POST">
+      <INPUT TYPE="TEXT" NAME="ticker" SIZE="12">
+      <INPUT TYPE="SUBMIT" NAME="submit" VALUE="submit">
+      <INPUT TYPE="RESET" NAME="Reset" VALUE="clear">
+    </FORM>
+<hr class="space">
+<hr class="space">
+<hr class="space">
+<hr class="space">
+<hr class="space">
+    </div>
+<div class="span-7 last">
+    <h3>Enter Sharing Id</h3>
+    <FORM ACTION="/sharedsession" METHOD="POST">
+      <INPUT TYPE="TEXT" NAME="sessionid" SIZE="12">
+      <INPUT TYPE="SUBMIT" NAME="submit" VALUE="submit">
+      <INPUT TYPE="RESET" NAME="Reset" VALUE="clear">
+    </FORM>
+  
+<hr class="space">
+</div>
+
+{% end %}

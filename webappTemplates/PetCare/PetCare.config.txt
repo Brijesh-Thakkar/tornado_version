@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Schedule", "Health", "Medical", "Supplies", "Daily Log", "Symptom", "Temperature", "Meal", "Contacts", "Reminders"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" style="background-color:#fff;">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Insert Product</title>
+<script type="text/javascript" src="../../../wp-includes/js/tinymce/tiny_mce_popup.js"></script>
+<script type="text/javascript" src="js/utils.js"></script>
+<script type="text/javascript">
+
+var ATCDialog = {
+	local_ed : 'ed',
+	init : function(ed) {
+		ATCDialog.local_ed = ed;
+		tinyMCEPopup.resizeToInnerSize();
+	},
+  insert : function(e) {
+		
+		//alert("The code for your product has been inserted to your page. Your visual editor will not update immediately but things will display correctly as soon as you preview or publish.");
+		var mySRC = rhtmlspecialchars(e.data);
+		
+		tinyMCEPopup.execCommand('mceInsertRawHTML', false, mySRC);
+		tinyMCEPopup.close();
+  }
+};
+
+tinyMCEPopup.onInit.add(ATCDialog.init, ATCDialog)
+
+var iSRC = '<iframe src="'+tinyMCE.activeEditor.settings.cashie_url+'/account/catalog?'+tinyMCE.activeEditor.settings.cashie_url_vars + '&origin=' + document.location.protocol + '//' + document.location.host + '&mode=insert" width="930" height="600" frameborder="0"></iframe>';
+
+if(typeof window.addEventListener != 'undefined') { 
+  window.addEventListener('message', ATCDialog.insert, false); 
+} 
+else if(typeof window.attachEvent != 'undefined') { 
+  window.attachEvent('onmessage', ATCDialog.insert); 
+}
+
+</script>
+</head>
+
+<body style="background-color:#fff;">
+<script type="text/javascript">
+document.write(iSRC);
+</script>
+</body>
+</html>

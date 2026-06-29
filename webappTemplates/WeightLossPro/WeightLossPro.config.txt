@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Intro", "Goal", "Log 1", "Log 2","Summary"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

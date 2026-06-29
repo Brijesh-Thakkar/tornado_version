@@ -1,0 +1,1 @@
+nohup /home/ubuntu/tmp/mongodb-linux-x86_64-2.2.2/bin/mongod --dbpath /home/ubuntu/data/db --journal > /dev/null 2> /dev/null < /dev/null &

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block head %}
+<script>
+function doedit(p) {
+   document.getElementById("pagename").value = p;
+   document.getElementById("edit").value = "yes";
+   }
+
+function doview(p) {
+   document.getElementById("pagename").value = p;
+   document.getElementById("view").value = "yes";
+   }
+function doremove(p) {
+   document.getElementById("pagename").value = p;
+   document.getElementById("delete").value = "yes";
+   }
+function donewticker() {
+   document.getElementById("ticker").value = document.getElementById("newticker").value;
+   }
+</script>
+{% end %}
+
+{% block body %}
+
+<div class="span-7">
+<hr class="space">
+</div>
+    <div class="span-8" align="center">
+
+<h3>Models for Ticker: {{ argument["ticker"] }}</h3>
+
+<!-- <form action="/stock" method="POST"> -->
+
+<form action="/multisheet" method="POST">
+
+<div>   
+<table> 
+  {% for entry in argument['entries'] %}
+<tr>
+<td>
+{{ entry.fname }}
+</td>
+<td>
+<input class="smaller" type="submit" value="Edit" onclick="doedit('{{ entry.fname }}');">
+</td>
+<td>
+<input class="smaller" type="submit" value="View" onclick="doview('{{ entry.fname }}');"> 
+</td>
+<td>
+<input class="smaller" type="submit" value="Delete" onclick="doremove('{{ entry.fname }}');"> 
+</td>
+</tr>
+  {% end %}
+</table>
+
+<input id="ticker" name="ticker" type="hidden" value="{{ argument["ticker"] }}">
+<input id="pagename" name="pagename" type="hidden" value="">
+<input id="edit" name="edit" type="hidden" value="">
+<input id="view" name="view" type="hidden" value="">
+<input id="delete" name="delete" type="hidden" value="">
+</div>
+<br>
+</form>
+
+</div>
+
+<div class="span-7 last">
+<hr class="space">
+</div>
+
+{% end %}

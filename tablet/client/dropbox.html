@@ -1,0 +1,42 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<link rel="stylesheet"  href="lib/jquery/_assets/css/jqm-docs.css"/> 
+<link rel="stylesheet"  href="lib/jquery/jquery.mobile.css" /> 
+<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="lib/jquery/jquery.mobile.js"></script>
+</head>
+<body> 
+
+	<div data-role="page" id="dropboxLogin" data-theme="d" data-title="Login" >
+	  	<div data-role="header" data-theme="a" class="ui-bar">
+		  <div class="ui-grid-b">
+		    <div class="ui-block-a">
+	              <div data-role="button" data-inline="true" data-icon="back"
+			onclick="$.mobile.changePage('file.html#filePage');">Back</div>
+		    </div>
+	            <div class="ui-block-b">
+	            </div>
+	
+	            <div class="ui-block-c">
+	               <span id="dropboxLogin-fname" style="vertical-align:middle;position: absolute; right: 50px; top: .4em;">Aspiring Apps</span>
+		    </div>
+		  </div>
+		</div>
+	
+	
+	      <div data-role="content" data-theme="d" >
+				<h2>Sign in to Aspiring Apps (www.aspiringapps.com)</h2>
+					<div data-role="fieldcontain" align=center>
+			    		<label for="email">Email</label>
+			    		<input type="email" name="email" id="email" value=""  />
+			    		<label for="password">Password</label>
+			    		<input type="password" name="password" id="password" value=""  />			    	
+					</div>	
+				
+					<button type="submit" data-theme="b" id="dropboxLoginButton">Sign in</button>
+				
+			</div>
+	</div>
+</body>
+</html>

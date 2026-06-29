@@ -1,0 +1,5 @@
+1. The xlsx file doesn't get the special text and non-text value format elements correctly, maybe it is an issue with the openoffice on my system, since the import takes place correctly except for the formulae. Also, the padding and the cell format is lost while exporting to xlsx
+2. The above issues for xls as well
+3. Padding and cell format lost for the pdf file, also, larger cell width is too less
+4. Padding and cell format lost for the html file
+5. Formulae lost for all of the above written formats

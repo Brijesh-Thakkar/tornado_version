@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Payment Log", "Year 1-2", "Year 3-4", "Year 5-6","Year 7-8","Year 9-10"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

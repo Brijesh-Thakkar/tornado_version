@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+ {% module Template("header-head.html") %}
+
+<body>
+
+ {% module Template("header-nav.html") %}
+
+ {% module Template("header-carousel.html") %}
+
+    <!-- Page Content -->
+    <div class="container">
+
+        {% module Template("index-marketing-icons.html") %}
+
+        {% module Template("index-portfolio.html") %}
+
+        {% module Template("index-callaction.html") %}
+
+        <hr>
+        {% module Template("footer.html") %}
+
+    </div>
+    <!-- /.container -->
+
+    {% module Template("footer-scripts.html") %}    
+
+    <!-- Script to Activate the Carousel -->
+    <script>
+    $('.carousel').carousel({
+        interval: 5000 //changes the speed
+    })
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,5 @@
+{ 
+	"footers": ["List1", "List2", "List3", "List4", "List5"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "def"
+}

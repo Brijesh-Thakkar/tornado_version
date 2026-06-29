@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Dashboard", "DCF Inputs", "DCF Report", "AEG Inputs", "AEG Report", "Statements"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

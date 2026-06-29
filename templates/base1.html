@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
+    <title>{{ escape(handler.settings["app_title"]) }}</title>
+    {% block head %}{% end %}
+  </head>
+  <body>
+      <h3><a href="/">Aspiring Investments</a></h3>
+      <hr>
+    {% block body %}{% end %}
+
+    {% block bottom %}{% end %}
+    <hr>
+
+	<div>         
+                <p class="smaller" align="center">
+		  <a href="/">About</a> &nbsp | &nbsp
+		  <a href="/">Feedback</a> &nbsp | &nbsp
+		  <a href="/">FAQ</a>
+
+                </p>
+                <p align="center" class="smaller">&copy; 2011</p>
+        </div>
+
+  </body>
+</html>

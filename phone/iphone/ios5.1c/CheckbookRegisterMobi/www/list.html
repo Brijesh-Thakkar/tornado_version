@@ -1,0 +1,69 @@
+<!DOCTYPE html> 
+<html>
+<head>
+</head>
+<body>
+  
+<div data-role="page" id="listPage" data-cache="never" data-scroll='y' data-iscroll='enable'>
+	<div id="header" data-role="header" data-theme="a" class="ui-bar">
+	  <div class="ui-grid-b">
+	    <div class="ui-block-a">
+              <div data-role="button" data-inline="true"
+	data-icon="home" data-mini="true"
+		onclick="changePage('#indexPage');"><small>Home</small></div>
+
+	    </div>
+            <div class="ui-block-b">
+            </div>
+
+            <div class="ui-block-c">
+	                  <div data-role="button" data-inline="true"
+	                  data-icon="back" data-mini="true"
+               onclick=" window.history.back();"><small>Back</small></div>
+
+	      <!-- <span id="listPage-fname"
+	      style="vertical-align:middle;position: absolute; right:
+	      40px; top: .4em;"></span> -->
+	    </div>
+	  </div>
+	</div>
+
+	<div id="content" data-role="content" data-theme="d"  >
+        <div id="scroll-content">
+
+             <ul data-role="listview" data-theme="d" id="filelist1">
+              </ul>
+
+            <ul data-role="listview" data-scroll='y' data-theme="d" id="filelist" style="display:none">
+	      <li class="fieldcontain">
+	      <div class="ui-grid-b">
+		  <div class="ui-block-a">
+              <!--ProtectedImagePlace-->
+		  </div>
+		
+	          <div class="ui-block-b">
+		       <span style="vertical-align:middle;position: absolute;top:1.2em;"><small>!--Template1--</small></span>
+		  </div>
+		  <div class="ui-block-c">		
+		         <fieldset data-role="controlgroup"
+	               data-type="vertical">
+	                 <div data-role="button" data-mini="true"  onclick="viewFile('!--Template3--');"><small>Edit</small></div>
+
+		         <div data-role="button" data-mini="true"  onclick="deleteFileMessage('!--Template2--')"><small>Delete</small></div>
+		         </fieldset>
+		   </div>
+		   
+	      </div>
+	      </li>
+              </ul>
+            </div>
+
+	      
+	</div>
+    
+<div id="footer"></div>
+</div>
+
+
+</body>
+</html>

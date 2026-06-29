@@ -1,0 +1,5 @@
+{ 
+	"footers": ["Ratio Analysis", "Activity", "Debt", "Probability","Sample Analysis","Sample Activity","Sample Debt","Sample Probability","Comparison"],
+	"dropbox": {"key": "YOUR_DROPBOX_APP_KEY", "secret": "YOUR_DROPBOX_APP_SECRET"},
+	"code": "abc"
+}

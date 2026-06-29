@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet"  href="lib/jquery/jquery.mobile-1.4.4.min.css" />
+        <script type="text/javascript" src="lib/jquery/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="lib/jquery/jquery.mobile-1.4.4.min.js"></script>
+        
+    </head>
+    <body>
+        
+        <div data-role="page" id="emailPage" data-cache="never" data-scroll='y' data-iscroll='enable'>
+            <div id="header" data-role="header"  data-theme="b" style="padding-bottom:10px;background: #DDDDDD;">
+                
+                        <div data-role="button" data-inline="true"  class="ui-btn ui-btn-right ui-corner-all ui-btn-icon-left ui-icon-home" onclick="changePage('#indexPage');">Home</div>
+                        <h3 style="color:black; align:center">Select Files to Send</h3>
+                    
+                        <div data-role="button" data-inline="true"
+                            class="ui-btn ui-corner-all ui-btn-left ui-btn-icon-left ui-icon-back" onclick=" window.history.back();">Back</div>
+                        
+            </div>
+            
+            <div role="main" class="ui-content" id="content">
+                <div id="scroll-content">
+                 
+                 <form>
+                     <fieldset data-role="controlgroup">
+                         
+                    <div>  <label for="grid-checkbox-1" >Intro</label>
+                        <input type="radio" id="grid-checkbox-1" name="grid-checkbox-1"  > </div>
+                    
+                    
+                    <div>	<label for="grid-checkbox-2" >Summary</label>
+                        <input type="radio" id="grid-checkbox-2" name="grid-checkbox-1"  >  </div>
+                    
+                    
+                    <div>	<label for="grid-checkbox-3" >Monthly</label>
+                        <input type="radio" id="grid-checkbox-3" name="grid-checkbox-1"  >  </div>
+                    
+                    <div>	<label for="grid-checkbox-4" >Advanced 2</label>
+                        <input type="radio" id="grid-checkbox-4" name="grid-checkbox-1"  >  </div>
+                    
+                    <div>	<label for="grid-checkbox-5" >Basic 3</label>
+                        <input type="radio" id="grid-checkbox-5" name="grid-checkbox-1"  >  </div>
+                    <div>	<label for="grid-checkbox-6" >Advanced 3</label>
+                        <input type="radio" id="grid-checkbox-6" name="grid-checkbox-1"  > </div>
+                    
+                    
+                    <div>	<label for="grid-checkbox-7" >Basic 4</label>
+                        <input type="radio" id="grid-checkbox-7" name="grid-checkbox-1"  >  </div>
+                    
+                    
+                    <div>	<label for="grid-checkbox-8" >Advanced 4</label>
+                        <input type="radio" id="grid-checkbox-8" name="grid-checkbox-1"  >  </div>
+                    
+                    <div>	<label for="grid-checkbox-9" >Basic 5</label>
+                        <input type="radio" id="grid-checkbox-9" name="grid-checkbox-1"  >  </div>
+                    
+<!--                    <div>	<label for="grid-checkbox-10" >Advanced 5</label>-->
+<!--                        <input type="radio" id="grid-checkbox-10" name="grid-checkbox-1"  >  </div>-->
+                     </fieldset>
+                 </form>
+
+                    
+                </div>
+                
+                
+            
+            <div  class="ui-btn ui-corner-all  ui-shadow" data-role="button" onclick="getFileForEmail();">Send</div>
+            <div  class="ui-btn ui-corner-all  ui-shadow" data-role="button" onclick="sendAllSheets();">Send All Sheets</div>
+            </div><!--content-->
+            <div id="footer"></div>
+        </div>
+        
+        
+    </body>
+</html>

@@ -1,0 +1,301 @@
+year end date,Y,t
+date preliminary data loaded,
+earnings period indicator,
+quarterly indicator,
+basic earnings indicator,
+template indicator,
+preliminary full context ind,
+projected fiscal year date,
+number of months last report period,
+INCOME STATEMENT,Y,t
+operating revenue,Y
+total revenue,
+adjustments to revenue,
+cost of sales,Y
+cost of sales with depreciation,
+gross margin,
+gross operating profit,Y
+Research & Development (R&D;) Expense,Y
+Selling, General & Administrative (SG&A;) Expense,Y
+advertising,
+operating income,Y
+EBITDA,
+depreciation,Y
+depreciation (unrecognized),
+amortization,Y
+amortization of intangibles,
+operating profit after depreciation,Y
+interest income,Y
+earnings from equity interest,
+other income net,Y
+income, acquired in process r&a;,
+Income, Restructuring and M&A;,
+other special charges,
+special income charges,
+EBIT,
+interest expense,Y
+pre-tax income ,Y
+income taxes,Y
+minority interest,
+pref. securities of subsid. trust,
+income before income taxes,
+net income (continuing operations),
+net income (discontinued operations),
+net income (total operations),
+extraordinary income/losses,
+income from cum. effect of acct. change,
+income from tax loss carryforward,
+other gains/losses,
+total net income,Y
+normalized income,
+net income available for common,
+preferred dividends,Y
+excise taxes,
+Basic EPS (Continuing),
+Basic EPS (Discontinued),
+Basic EPS from Total Operations,
+Basic EPS (Extraordinary Items),
+Basic EPS (Cum. Effect of Acct. Change),
+Basic EPS (Tax Loss Carry Forward),
+Basic EPS (Other Gains/Losses),
+Basic EPS - Total,Y
+Basic EPS - Normalized,
+Diluted EPS (Continuing),
+Diluted EPS (Discontinued),
+Diluted EPS from Total Operations,
+Diluted EPS (Extraordinary),
+Diluted EPS (Cum. Effect of Acct. Change),
+Diluted EPS (Tax Loss Carry Forward),
+Diluted EPS (Other Gains/Losses),
+Diluted EPS - Total,Y
+Diluted EPS - Normalized,
+Dividends Paid Per Share (DPS),Y
+INCOME STATEMENT (YEAR-TO-DATE),
+Revenue (YTD),
+Net Income from Total Operations (YTD),
+EPS from Total Operations (YTD),
+Dividends Paid Per Share (YTD),
+BALANCE SHEET,Y,t
+ASSETS,Y,t
+cash & equivalents,Y
+restricted cash,Y
+marketable securities,Y
+accounts receivable,Y
+loans receivable,
+other receivable,
+receivables,Y
+inventories, raw materials,
+inventories, work in progress,
+inventories, purchased components,
+inventories, finished goods,
+inventories, other,
+inventories, adjustments & allowances,
+inventories,Y
+prepaid expenses,Y
+current defered income taxes,
+other current assets,Y
+total current assets,Y
+land and improvements,
+building and improvements,
+machinery, furniture & equipment,
+construction in progress,
+other fixed assets,
+total fixed assets,Y
+gross fixed assets,
+accumulated depreciation,Y
+net fixed assets,Y
+intangibles,Y
+cost in excess,
+non-current deferred income taxes,
+other non-current assets,
+total non-current assets,Y
+total assets,Y
+inventory valuation method,
+EQUITY & LIABILITIES,Y,t
+accounts payable,Y
+notes payable,Y
+short-term debt,Y
+accrued expenses,Y
+accrued liabilities,Y
+deferred revenues,Y
+current deferred income taxes,
+other current liabilities,Y
+total current liabilities,Y
+long-term debt,Y
+capital lease obligations,Y
+deferred income taxes,
+other non-current liabilities,Y
+minority interest liability,
+preferred secur. of subsid. trust,
+preferred equity outside stock equity,
+total non-current liabilities,Y
+total liabilities,Y
+preferred stock equity,
+common stock equity,
+common par,
+additional paid-in capital,
+cumulative translation adjustments,
+retained earnings,Y
+treasury stock,
+other equity adjustments,
+total capitalization,
+total equity,Y
+total liabilities & stock equity,Y
+cash flow,
+working capital,
+free cash flow,
+invested capital,
+shares out (common class only),
+preferred shares,Y
+total ordinary shares,
+total common shares out,Y
+treasury shares,
+basic weighted shares,
+diluted weighted shares,
+number of employees,
+number of part-time employees,
+CASH-FLOW STATEMENT,Y,t
+OPERATING ACTIVITIES,Y,t
+net income/loss,Y
+depreciation,Y
+amortization,Y
+amortization of intangibles,Y
+deferred income taxes,Y
+operating gains,Y
+extraordinary gains,Y
+(increase) decrease in receivables,Y
+(increase) decrease in inventories,Y
+(increase) decrease in prepaid expenses,Y
+(increase) decrease in other current assets,Y
+decrease (increase) in payables,Y
+decrease (increase) in other current liabilities,Y
+decrease (increase) in other working capital,Y
+other non-cash items,
+net cash from continuing operations,Y
+net cash from discontinued operations,Y
+net cash from total operating activities,Y
+INVESTING ACTIVITIES,Y,t
+sale of property, plant & equipment,Y
+sale of long-term investments,Y
+sale of short-term investments,Y
+purchase of property, plant & equipment,Y
+acquisitions,Y
+purchase of long-term investments,
+purchase of  short-term investments,
+other investing changes, net,
+cash from discontinued investing activities,
+net cash from investing activities,Y
+FINANCING ACTIVITIES,Y,t
+issuance of debt,Y
+issuance of capital stock,Y
+repayment of long-term debt,Y
+repurchase of capital stock,Y
+payment of cash dividends,Y
+other financing charges, net,Y
+cash from discontinued financing activities,
+net cash from financing activities,Y
+NET CASH FLOW,Y,t
+effect exchange rate changes,
+net change in cash & equivalents,Y
+cash at beginning of period,Y
+cash end of period,Y
+foreign sales,
+domestic sales,
+auditor name,
+auditor report,
+RATIOS CALCULATIONS,
+PROFIT MARGINS,
+Close PE Ratio,
+High PE Ratio,
+Low PE Ratio,
+gross profit margin,
+pre-tax profit margin,
+post-tax profit margin,
+net profit margin,
+interest coverage (cont. operations),
+interest as % of invested capital,
+effective tax rate,
+income per employee,
+NORMALIZED RATIOS,
+Normalized Close PE Ratio,
+Normalized High PE Ratio,
+Normalized Low PE Ratio,
+normalized net profit margin,
+Normalized ROE,
+Normalized ROA,
+Normalized ROCI,
+normalized income per employee,
+SOLVENCY RATIOS,
+quick ratio,
+current ratio,
+payout ratio,
+total debt/equity ratio,
+long-term debt/total capital ,
+EFFICIENCY RATIOS,
+leverage ratio,
+asset turnover,
+cash as % of revenue,
+receivables as % of revenue,
+SG&A; as % of Revenue,
+R&D; as % of Revenue,
+ACTIVITY RATIOS,
+revenue per $ cash,
+revenue per $  plant (net),
+revenue per $ common equity,
+revenue per $ invested capital,
+LIQUIDITY RATIOS,
+receivables turnover,
+inventory turnover,
+receivables per day sales,
+sales per $ receivables,
+sales per $ inventory,
+revenue/assets,
+number of days cost of goods in inventory,
+current assets per share,
+total assets per share,
+intangibles as % of book-value,
+inventory as % of revenue,
+CAPITAL STRUCTURE RATIOS,
+long-term debt per share,
+current liabilities per share,
+cash per share,
+LT-Debt to Equity Ratio,
+LT-Debt as % of Invested Capital,
+LT-Debt as % of Total Debt,
+total debt as % total assets,
+working captial as % of equity,
+revenue per share,
+book value per share,
+tangible book value per share,
+price/revenue ratio,
+price/equity ratio,
+price/tangible book ratio,
+working capital as % of price,
+PROFITABILITY,
+working capital per share,
+cash flow per share,
+free cash flow per share,
+Return on Stock Equity (ROE),
+Return on Capital Invested (ROCI),
+Return on Assets (ROA),
+price/cash flow ratio,
+price/free cash flow ratio,
+sales per employee,
+AGAINST THE INDUSTRY RATIOS,
+% of sales-to-industry,
+% of earnings-to-industry,
+% of EPS-to-Industry,
+% of price-to-industry,
+% of PE-to-Industry,
+% of price/book-to-industry,
+% of price/sales-to-industry,
+% of price/cashflow-to-industry,
+% of pric/free cashlow-to-industry,
+% of debt/equity-to-industry,
+% of current ratio-to-industry,
+% of gross profit margin-to-industry,
+% of pre-tax profit margin-to-industry,
+% of post-tax profit margin-to-industry,
+% of net profit margin-to-industry,
+% of ROE-to-Industry,
+% of leverage-to-industry,

@@ -1,0 +1,532 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+	<!-- Change this if you want to allow scaling -->
+   <!-- <meta name="viewport" content="width=default-width, user-scalable=no" />-->
+	<meta name="viewport" content="width=default-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width, height=device-height, target-densitydpi=medium-dpi" />
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+    <title>{{ entry["fname"] }}</title>
+
+      <link rel="stylesheet"  href="{{ static_url("runappios43c/lib/jquery/_assets/css/jqm-docs.css") }}"/>
+      <link rel="stylesheet"  href="{{ static_url("runappios43c/lib/jquery/jquery.mobile.css") }}" />
+      <link rel="stylesheet"  href="{{ static_url("runappios43c/css/style.css") }}" />
+
+
+
+    <!-- App specific javascript headers -->
+    {{ entry["appstylefiles"] }}
+
+    <script type="text/javascript" charset="utf-8">
+
+      var selectedFile = "default";
+      var initialSelectedSheetId = "sheet1";
+        
+        var childbrowser;
+
+	var webapp_sessionid = "{{ entry['sessionid'] }}";
+
+        function BlockMove(event) {
+            // event.preventDefault();
+        }
+
+	function onBodyLoad()
+	{
+	document.addEventListener("deviceready",onDeviceReady,false);
+	if ({{ entry['dbLogin'] }})
+	{
+	window.sessionStorage.setItem('dbLogin', true);
+	// alert("dbLogin: "+window.sessionStorage.getItem('dbLogin'));
+	} else {
+	window.sessionStorage.removeItem('dbLogin', false);
+	}
+
+	var isMobile = {
+	Android: function() {
+        return navigator.userAgent.match(/Android/i);
+	},
+	BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i);
+	},
+	iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+	},
+	Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i);
+	},
+	Windows: function() {
+        return navigator.userAgent.match(/IEMobile/i);
+	},
+	any: function() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+	}
+	};
+
+	if (!(isMobile.any())) {
+
+
+	$("#printDialogButton").show()
+
+
+	}
+
+        if (selectedFile != "default") {
+          updateFileName(selectedFile);
+          var initialSelectedSheetButton = getSheetIndexFromId(initialSelectedSheetId)
+          console.log("initial button is: "+initialSelectedSheetButton)
+          activateFooterBtn(initialSelectedSheetButton)
+        }
+
+
+	}
+
+	/* When this function is called, PhoneGap has been initialized and is ready to roll */
+	function onDeviceReady()
+	{
+              
+	}
+
+   </script>
+
+   <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-52640465-2', 'auto');
+  ga('send', 'pageview');
+
+  </script>
+
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/jquery/jquery.min.js") }}"></script>
+
+
+<!-- The following are the core app -->
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/aspiring/socialcalcconstants.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/aspiring/socialcalc-3.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/aspiring/aspiringt.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/aspiring/socialcalctableeditor.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/aspiring/formatnumber2.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/aspiring/formula1.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/aspiring/socialcalcpopup.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/aspiring/socialcalcspreadsheetcontrol.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/aspiring/socialcalcworkbookcontrol.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/aspiring/aspiringwb.js") }}"></script>
+<!--<script type="text/javascript" src="{{ static_url("runappios43c/lib/aspiring/aspiringwbc.js") }}"></script>-->
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/aspiring/json2.js") }}"></script>
+
+
+<!-- The following are jquery -->
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/jquery/jquery.mobile.js") }}"></script>
+
+<!-- The following is called after highcharts is loaded -->
+<script type="text/javascript" src="{{ static_url("runappios43c/AppGeneral_amazon.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/aspiring/autosave.js") }}"></script>
+
+<!--Dropbox Plugin-->
+<script type="text/javascript" src="{{ static_url("runappios43c/lib/dropbox/dropboxHandler_amazon.js") }}"></script>
+
+<!--Server code Plugin-->
+<script type="text/javascript" src='{{ static_url("runappios43c/lib/server/serverHandler_amazon.js") }}'></script>
+
+
+<!-- The following are graphing -->
+<script type="text/javascript"  src="{{ static_url("runappios43c/lib/graphing/jquery.flot.min.js") }}"></script>
+<script type="text/javascript"  src="{{ static_url("runappios43c/lib/graphing/jquery.flot.pie.min.js") }}"></script>
+<script type="text/javascript"  src="{{ static_url("runappios43c/lib/graphing/jquery.flot.stack.min.js") }}"></script>
+
+
+<script type="text/javascript" src="{{ static_url("runappios43c/js/stock/normalizedata.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/js/stock/msndatasource.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/js/stock/smartmoneydatasource.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/js/stock/statements.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("runappios43c/js/stock/ticker.js") }}"></script>
+    
+<!-- App specific javascript headers -->
+{{ entry["appjsfiles"] }}
+
+</head>
+  <body onload="onBodyLoad()">
+
+ 
+<div data-role="page" class="type-index" id="indexPage" data-fullscreen="true"  data-theme="d">
+  
+<div data-role="header" data-theme="a" data-position="fixed" class="ui-bar">
+  
+<div class="ui-grid-solo">
+   
+   <div data-role="controlgroup" data-inline="true" data-type="horizontal" class="group">    
+      <a href="{{ static_url("runappios43c/email.html") }}" data-role="button" data-inline="true" data-rel="dialog"><h1>Email</h1></a>
+      <div id="printDialogButton" data-role="button" data-inline="true" onclick="showPrintDialog();"><h1>Print</h1></div>
+      <div id="logoButton" data-role="button" data-inline="true" onclick="addLogoStart();"><h1>Add Logo</h1></div>
+      <a href="{{ static_url("runappios43c/file.html") }}" data-role="button" data-inline="true"><h1>File</h1></a>
+      <div id="exportCsvButton" data-role="button" data-inline="true" onclick="addExportStart();"><h1>Export as CSV</h1></div>
+      <div id="donateButton" data-role="button" data-inline="true" onclick="startDonation();"><h1>Donate</h1></div>
+
+  </div>
+   
+  
+   
+   <span id="indexPage-fname" style="float: right;margin-right: 50px;margin-top: -25px;">Editing: default</span>
+   <img style="position: absolute; right: 10px; top: 0.8em" src="{{ static_url("runappios43c/lib/aspiring/images/sc-logo.gif") }}"></img>
+   <div id="ticker-load" style="display:none; margin-top:-35px; margin-right:210px; float:right; " data-role="button" data-inline="true" onclick="loadTickerStart();"><h1>Load Ticker</h1></div> 
+
+  
+
+</div> <!-- ui-grid-b -->
+
+</div> <!-- header -->
+<div id="container">
+
+<div class="dropdown-block" style="display:none;" id="add-logo-block">
+    <div id="upload" enctype="multipart/form-data">
+
+    <fieldset>
+    <legend>Add Logo</legend>
+
+    <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="300000" />
+
+    <form id="fileForm"> 
+    <div>
+    	<label for="fileselect">Choose logo:</label>
+    	<input type="file" id="fileselect" name="fileselect[]" multiple="multiple" />
+    	<div id="filedrag">or Drop logo here</div>
+    </div>
+    </form>
+    
+    <div id="cancelUploadbutton" data-role="button" data-inline="true" onclick="cancelUploadLogo()">Close</div>
+    <div id="submitbutton" data-role="button" data-inline="true" type="submit">Upload Logo</div>
+    <div id="clearLogobutton" data-role="button" data-inline="true" onclick="removeLogo();">Clear Logo</div>
+
+    </fieldset>
+
+    </div>
+    <div id="messages" style="display:none;">
+      <p>Status Messages</p>
+    </div>
+    <div id="fileDisplayArea"></div>
+</div>
+
+
+<div class="dropdown-block" style="display:none;" id="csv-export-block">
+
+    <div>Filename: <input type="text" name="csv-name-div" id="csv-name-div" placeholder="Enter filename here" value="Untitled"/></div>
+    <br>
+
+    <fieldset>    
+      <div id="cancelUploadbutton" data-role="button" data-inline="true" onclick="closeExportDialog()">Close</div>
+      <div id="export-csv-btn" data-role="button" data-inline="true" onclick="exportAsCsv()">Export as Csv</div>
+
+      <div id="results"></div>
+
+    </fieldset>
+
+</div>
+
+
+<div class="dropdown-block" style="display:none;" id="add-donate-block">
+  <div id="paypal-payment-block">
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+        <input type="hidden" name="cmd" value="_s-xclick" />
+        <input type="hidden" name="hosted_button_id" value="7XYA5PEFRT6DC" />
+        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" id="image-div"/>
+        <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+    </form>
+
+    <div id="close-donate-button" data-role="button" data-inline="true" onclick="cancelDonation();">Cancel</div>
+
+  </div>
+</div>
+
+
+
+ 
+  <div id="workbookControl" style="background-color:#80A9F3;">
+    </div>
+
+     <div id="tableeditor">editor goes here</div> 
+
+
+   <div id="msg" onclick="this.innerHTML='&nbsp;';"></div> 
+
+</div>
+    
+<textarea name="savestr" id="sheetdata" style="display:none;">
+{{ entry["sheetstr"] }}
+</textarea>
+
+<script>
+
+   if (!Aspiring) {
+   var Aspiring = {};
+   }
+   Aspiring.appname = "{{ entry["fname"] }}";
+
+   if(Aspiring.appname == "SalesReceipt"){
+      document.getElementById('importSignatureButton').style.display='';
+      document.getElementById('importLogo').style.display='';
+      
+   }
+   else if(Aspiring.appname == "StockValue" || Aspiring.appname == "DuPontAnalysis"){
+      document.getElementById('ticker-load').style.display='';
+      
+      
+   }
+
+
+   
+SocialCalc.ToggleInputLineButtons = function(show) {
+   var bele = document.getElementById("testtest");
+   if (!bele) return;
+   if (show) {
+      bele.style.display = "inline";
+   } else {
+     bele.style.display = "none";
+   } 
+}
+SocialCalc.InputLineClearText = function() {
+   spreadsheet.editor.inputBox.SetText("");
+}
+
+  jQuery.postJSON = function(url, args, callback) {
+  //args._xsrf = getCookie("_xsrf");
+  //console.log(args)
+  var test = $.param(args)
+  //console.log(test)
+  
+  $.ajax({url: url, data: $.param(args), dataType: "text", type: "POST",
+  success: function(response) {
+  if (callback) callback(eval("(" + response + ")"));
+  }, error: function(response) {
+  console.log("ERROR:", response)
+  }});
+  };
+
+  SocialCalc.Callbacks.broadcast = function(type, data) {
+
+  }
+
+  SocialCalc.Constants.defaultImagePrefix = "{{ static_url("runappios43c/lib/aspiring/images/sc-") }}";
+  SocialCalc.Constants.defaultGridCSS = "";
+  SocialCalc.Constants.SCNoColNames = true;
+  SocialCalc.Constants.SCNoRowName = true;
+  SocialCalc.Constants.defaultRownameStyle = "";
+  SocialCalc.Constants.defaultSelectedRownameStyle = "";
+  SocialCalc.Popup.imagePrefix = "{{ static_url("runappios43c/lib/aspiring/images/sc-") }}";
+
+
+  var spreadsheet = new SocialCalc.SpreadsheetControl();
+
+
+
+var workbook = new SocialCalc.WorkBook(spreadsheet);
+workbook.InitializeWorkBook("sheet1");
+        
+
+spreadsheet.InitializeSpreadsheetControl("tableeditor");
+spreadsheet.ExecuteCommand('redisplay', '');
+
+
+var workbookcontrol = new SocialCalc.WorkBookControl(workbook,"workbookControl","sheet1");
+workbookcontrol.InitializeWorkBookControl();
+    
+
+SocialCalc.WorkBookControlLoad(document.getElementById("sheetdata").value)
+
+spreadsheet.DoOnResize();
+
+var selectedFile = "default"
+
+initialSelectedSheetId = "sheet1"
+var initialFileLoadData = null;
+
+
+if (getLastEditedFileName()) {
+   selectedFile = getLastEditedFileName();
+   console.log("lastedited="+selectedFile)
+   initialFileLoadData = getLastEditedFileData();
+
+   if (initialFileLoadData) {
+     try {
+       var initialmscfile = JSON.parse(initialFileLoadData)
+       initialSelectedSheetId = initialmscfile["currentid"]
+       console.log("initbtn="+initialSelectedSheetId)
+     } catch (e) {
+
+     }
+     SocialCalc.WorkBookControlLoad(initialFileLoadData)
+   } else {
+     selectedFile = "default"
+     SocialCalc.WorkBookControlLoad(document.getElementById("sheetdata").value)
+   }
+} else {
+   SocialCalc.WorkBookControlLoad(document.getElementById("sheetdata").value)
+   
+}
+
+					 
+
+</script>
+
+    <div data-role="footer" class="ui-bar" data-theme="a"  data-position="fixed" data-id: "myfooter">
+        <table align="center"> <tr><td>
+            </div></td><td>&nbsp;&nbsp;</td><td>
+                <div data-role="controlgroup" data-type="horizontal">
+
+		  <div id="footerbtn1" data-role="button" class="ui-btn-active" onclick="activateFooterBtn(1)"><H1>{{ entry["sheets"][0] }}</H1></div>
+
+		  {% for sheet in range(1,len(entry["sheets"])) %}
+		    {% block sheet %}
+		  <div id="footerbtn{{ sheet+1 }}" data-role="button" onclick="activateFooterBtn( {{ sheet+1 }} )"><H1>{{ entry["sheets"][sheet] }}</H1></div>
+		    {% end %}
+		  {% end %}
+               </div>
+
+		</td><td>&nbsp;&nbsp;</td><td>
+                    <div>
+                        </td></tr>
+    </table>   </div> <!-- footer -->
+
+</div> <!-- page -->
+ 
+</body>
+
+<script type="text/javascript">
+(function() {
+
+  // getElementById
+  function $id(id) {
+    return document.getElementById(id);
+  }
+
+  // file drag hover
+  function FileDragHover(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    e.target.className = (e.type == "dragover" ? "hover" : "");
+  }
+
+  // file selection
+  function FileSelectHandler(e) {
+    // cancel event and hover styling
+    FileDragHover(e);
+    // fetch FileList object
+    var files = e.target.files || e.dataTransfer.files;
+    // process all File objects
+    for (var i = 0, f; f = files[i]; i++) {
+      ParseFile(f);
+    }
+  }
+
+  // output file information
+  function ParseFile(f) {
+
+    var submitbutton = $id("submitbutton");
+    var imageType = /image.*/;
+    var fileDisplayArea = $id('fileDisplayArea');
+    var src;
+
+      $('#fileDisplayArea').empty();
+
+      if (f.type.match(imageType)) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+
+          var img = new Image();
+          img.src = reader.result;
+          src = img.src;
+           
+          fileDisplayArea.appendChild(img);
+        }
+
+
+        reader.readAsDataURL(f); 
+      }
+
+    
+    var name = escape(f.name);
+    // alert(name);
+
+    submitbutton.addEventListener("click", function(f){
+      startLogoImport(name,src);
+    }, false);
+
+  }
+
+  // initialize
+  function Init() {
+
+    var fileselect = $id("fileselect"),
+      filedrag = $id("filedrag"),
+      submitbutton = $id("submitbutton");
+
+    // file select
+    fileselect.addEventListener("change", FileSelectHandler, false);
+
+    // is XHR2 available?
+    var xhr = new XMLHttpRequest();
+    if (xhr.upload) {
+
+      // file drop
+      filedrag.addEventListener("dragover", FileDragHover, false);
+      filedrag.addEventListener("dragleave", FileDragHover, false);
+      filedrag.addEventListener("drop", FileSelectHandler, false);
+      filedrag.style.display = "block";
+
+      // remove submit button
+      // submitbutton.style.display = "none";
+    }
+
+  }
+
+  // call initialization file
+  if (window.File && window.FileList && window.FileReader) {
+    Init();
+  }
+
+
+})();
+</script>
+<script type="text/javascript">
+  document.getElementById('image-div').addEventListener("click", function(event){
+    var category = Aspiring.getFilePrefix()+"Donate";
+    var label = "Home/Link";
+    sendEventHit(category, label, "Donate block: Hit sent");
+  });
+</script>
+ 
+<style type="text/css">
+#signature{
+  margin-top: 100px;
+  webkit-box-shadow: 0 8px 6px -6px black;
+  -moz-box-shadow: 0 8px 6px -6px black;
+  box-shadow: 0 8px 6px -6px black;
+  border-width: 0px
+
+}
+.thumb {
+    height: 75px;
+    border: 1px solid #000;
+    margin: 10px 5px 0 0;
+    padding-left: 10px;
+}
+.group a:hover{
+  color: #5CC5F9;
+
+}
+.group div:hover{
+  color: #5CC5F9;
+
+}
+span:hover{
+  color: #5CC5F9;
+
+}
+#indexPage-fname{
+  cursor: pointer;
+}
+</style>
+</html>

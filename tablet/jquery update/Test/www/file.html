@@ -1,0 +1,46 @@
+<!DOCTYPE html> 
+<html>
+<head>
+    <link rel="stylesheet"  href="lib/jquery/jquery.mobile-1.4.4.min.css" />
+    <script type="text/javascript" src="lib/jquery/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.mobile-1.4.4.min.js"></script>
+
+</head>
+<body> 
+
+<div data-role="page" id="filePage">
+
+
+  	<div data-role="header" data-theme="b" style="padding-bottom:10px;background: #DDDDDD;">
+	  <div class="ui-grid-b">
+	    <div class="ui-block-a" style="padding-left:4%">
+              <div data-role="button" class="ui-btn ui-corner-all ui-btn-icon-left ui-icon-home" data-inline="true" data-icon="home"
+		onclick="changePage('#indexPage');">Home</div>
+	    </div>
+            <div class="ui-block-b" style="padding-left:7%">
+               <div id="dropboxLoginButton" class="ui-btn ui-corner-all" data-role="button"  onclick="dropboxHandler.login();" >Login to Dropbox</div>
+           </div>
+
+            <div class="ui-block-c">
+               <div id="dropboxLogoutButton" class="ui-btn ui-corner-all" data-role="button"  onclick="dropboxHandler.logout();" >Logout from Dropbox</div>
+
+	    </div>
+	  </div>
+	</div>
+
+
+  <div role="main" class="ui-content">
+       
+      <div  class="ui-btn ui-corner-all  ui-shadow" data-role="button" onclick="saveCurrentMessage();">Save</div>
+      <div  class="ui-btn ui-corner-all  ui-shadow" data-role="button" onclick="saveAsMessage();">Save As</div>
+      <div  class="ui-btn ui-corner-all  ui-shadow" data-role="button" onclick="encryptFile();">Save As Password Protected File</div>
+      <a  class="ui-btn ui-corner-all  ui-shadow" href="list.html" data-role="button" >List Files</a>
+      <div  class="ui-btn ui-corner-all  ui-shadow" data-role="button" onclick="dropboxHandler.saveToDropboxPage();">Save Files to Dropbox</div>
+      <a class="ui-btn ui-corner-all  ui-shadow" href="dropboxList.html" data-role="button" >List Dropbox Files</a>
+       
+    </div><!--content ends-->
+</div>
+
+	
+</body>
+</html>
