@@ -11,22 +11,22 @@ import logging
 
 from boto.s3.connection import S3Connection, OrdinaryCallingFormat
 from boto.s3.key import Key
+import boto.auth
 
 
 # S3 connection
 aws_access_key = os.environ.get('AWS_ACCESS_KEY_ID')
 aws_secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
-try:
-    connection = S3Connection(
-        aws_access_key_id=aws_access_key,
-        aws_secret_access_key=aws_secret_key,
-        host='s3.amazonaws.com',
-        calling_format=OrdinaryCallingFormat()
-    )
-except Exception as e:
-    logging.error("Failed to create S3Connection: %s" % str(e))
-    connection = None
+import os
+os.environ['S3_USE_SIGV4'] = 'True'
+
+connection = S3Connection(
+    aws_access_key_id=aws_access_key,
+    aws_secret_access_key=aws_secret_key,
+    host='s3.amazonaws.com',
+    calling_format=OrdinaryCallingFormat()
+)
 AspiringStorageBucket = "mc2-app-storage-useast1"
 
 print "Starting cloud import"
