@@ -4,7 +4,7 @@
 #
 # 
 #
-import commands
+import subprocess
 import logging
 import os.path
 import re

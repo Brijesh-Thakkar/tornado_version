@@ -7,7 +7,7 @@
 #
 # server-repo amazonwebapp.py
 import os
-import commands
+import subprocess
 import json
 import logging
 import os.path
@@ -15,7 +15,7 @@ import random
 import string
 import sys
 import traceback
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import uuid
 
 import dropbox
@@ -52,7 +52,7 @@ class Application(tornado.web.Application):
             (r"/webapps",LandingHandler)
         ]
         settings = dict(
-            app_title=u"Aspiring Investments",
+            app_title="Aspiring Investments",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             util_path=os.path.join(os.path.dirname(__file__), "util"),
@@ -108,7 +108,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class GoogleVerificationHandler(BaseHandler):
     def get(self,slug):
-        print "slug is", slug
+        print("slug is", slug)
         self.render(slug)
 
 class LandingHandler(BaseHandler):
@@ -128,11 +128,11 @@ class UserLoginHandler(BaseHandler):
         password = self.get_argument('password')
         logging.info(user)
         if amazon_cloud.authenticate.user.authenticate_user(user,password):
-            print "authenticate succeeded"
+            print("authenticate succeeded")
             self.set_current_user(user)
             self.redirect("/save")
         else:
-            print "authenticate failed"
+            print("authenticate failed")
             self.redirect("/login")
 
 
@@ -274,22 +274,22 @@ class AuthenticationHandler(BaseHandler):
 
         # Login action here
         if action == "login":
-            print "Login action started"
+            print("Login action started")
             email = self.get_argument('email')
             password = self.get_argument('pwd')
             if amazon_cloud.authenticate.user.authenticate_user(email, password):
-                print "authenticate succeeded"
+                print("authenticate succeeded")
                 self.set_current_user(email)
                 self.finish(dict(data="success", result="ok"))
             elif amazon_cloud.authenticate.user.user_exists(email) is False:
                 self.finish(dict(data="usererror", result="fail"))
             else:
-                print "authenticate failed"
+                print("authenticate failed")
                 self.finish(dict(data="authfail", result="fail"))
 
         # Register action here
         if action == "register":
-            print "Register action started"
+            print("Register action started")
             user = self.get_argument('email')
             password = self.get_argument('pwd')
             if amazon_cloud.authenticate.user.user_exists(user):
@@ -298,14 +298,14 @@ class AuthenticationHandler(BaseHandler):
             user_directory = "users"
             user_directory_path = ["home", "users"]
             if amazon_cloud.storage.storage.getFile(user_directory) is None:
-                print "Creating parent directory"
+                print("Creating parent directory")
                 amazon_cloud.storage.storage.createDir(user_directory_path)
             amazon_cloud.authenticate.user.create_user(user, password)
             self.set_current_user(user)
             path = ["home", user]
             directory_obj = amazon_cloud.storage.storage.getFile(path)
             if (not directory_obj) or (len(directory_obj.files) == 0):
-                print "Creating directory for user ", user
+                print("Creating directory for user ", user)
                 amazon_cloud.storage.storage.createDir(path)
                 self.finish(dict(data="success", result="ok"))
 
@@ -387,12 +387,12 @@ class WebAppHandler(BaseHandler):
             data = json.loads(data)
             for filename in data:
                 content = data[filename]
-                print filename," ,",content
+                print(filename," ,",content)
                 path = ["home", user, appname, "files", filename]
                 directory_path = ["home", user, appname, "files"]
                 directory_obj = amazon_cloud.storage.storage.getFile(directory_path)
                 if (not directory_obj) or (len(directory_obj.files) == 0):
-                    print "Creating directory for app ", appname
+                    print("Creating directory for app ", appname)
                     amazon_cloud.storage.storage.createDir(directory_path)
                 if content is not None:
                     file_obj = amazon_cloud.storage.storage.getFile(path)
@@ -430,12 +430,12 @@ class WebappSession:
         self.mc.set(self.id, json.dumps(self.data))
 
     def pop(self, key):
-        if self.data.has_key(key):
+        if key in self.data:
             self.data.pop(key)
         self.mc.set(self.id, json.dumps(self.data))        
 
     def get(self, key):
-        if self.data.has_key(key):
+        if key in self.data:
             return self.data[key]
         else:
             return None
@@ -484,7 +484,7 @@ class DropBoxHandler(BaseHandler):
         try:
             logging.info(repr(request.arguments))
             req = {}
-            for i in request.arguments.keys():
+            for i in list(request.arguments.keys()):
                 req[i] = request.arguments[i][0]
             logging.info(repr(req))
             access_token, user_id, url_state = \
@@ -553,18 +553,18 @@ class DropBoxHandler(BaseHandler):
                 data = self.get_argument('string')
                 fname = self.get_argument('name')
                 response = client.put_file(fname, data, True)
-                print "uploaded: ", response
+                print("uploaded: ", response)
                 self.finish(dict(data="Done"))
-            except dropbox.rest.ErrorResponse, e:
+            except dropbox.rest.ErrorResponse as e:
                 logging.info(e)
                 self.finish(dict(data="Error"))
 
         elif action == 'listdir':
             try:
                 folder_metadata = client.metadata('/')
-                print "List of files:", folder_metadata
+                print("List of files:", folder_metadata)
                 self.finish(folder_metadata)
-            except dropbox.rest.ErrorResponse, e:
+            except dropbox.rest.ErrorResponse as e:
                 logging.info(e)
                 self.finish(dict(data="Error"))
 
@@ -574,9 +574,9 @@ class DropBoxHandler(BaseHandler):
                 f = client.get_file(self.get_argument('fname'))
                 fileData = f.read()
                 f.close()
-                print "downloaded file"
+                print("downloaded file")
                 self.finish(dict(text=fileData))
-            except dropbox.rest.ErrorResponse, e:
+            except dropbox.rest.ErrorResponse as e:
                 logging.info(e)
                 self.finish(dict(data="Error"))
 
@@ -584,7 +584,7 @@ class DropBoxHandler(BaseHandler):
             try:
                 metadata = client.file_delete(self.get_argument('fname'))
                 self.finish(dict(data="Done"))
-            except dropbox.rest.ErrorResponse, e:
+            except dropbox.rest.ErrorResponse as e:
                 logging.info(e)
                 self.finish(dict(data="Error"))
  

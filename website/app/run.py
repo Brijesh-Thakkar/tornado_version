@@ -5,10 +5,10 @@
 #
 #
 
-import tornado.options
-import tornado.httpserver
-import tornado.ioloop
-import controllers.main
+from . import tornado.options
+from . import tornado.httpserver
+from . import tornado.ioloop
+from . import controllers.main
 
 def main():
     tornado.options.parse_command_line()

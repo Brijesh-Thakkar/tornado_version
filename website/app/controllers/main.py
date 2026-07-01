@@ -29,7 +29,7 @@ class Application(tornado.web.Application):
             (r"/web/home/(.*)", WebHomeHandler)
         ]
         settings = dict(
-            app_title=u"Aspiring Apps",
+            app_title="Aspiring Apps",
             template_path=os.path.join(os.path.dirname(__file__), "../templates/mb-aspiring"),
             static_path=os.path.join(os.path.dirname(__file__), "../public"),
             static_url_prefix="/web/static/",

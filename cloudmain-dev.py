@@ -7,7 +7,7 @@
 #
 
 import os
-import commands
+import subprocess
 import logging
 import os.path
 import re
@@ -31,7 +31,7 @@ from tornado.options import define, options
 from util.amazon_ses import AmazonSES,EmailMessage
 
 from collections import namedtuple
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import dropbox
 import memcache
 
@@ -96,7 +96,7 @@ class Application(tornado.web.Application):
             #(r"/tickerjson", TickerJsonHandler)              
         ]
         settings = dict(
-            app_title=u"Aspiring Investments",
+            app_title="Aspiring Investments",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             util_path=os.path.join(os.path.dirname(__file__), "util"),
@@ -176,11 +176,11 @@ class UserLoginHandler(BaseHandler):
         password = self.get_argument('password')
         logging.info(user)
         if cloud.authenticate.user.authenticate_user(user,password):
-            print "authenticate succeeded"
+            print("authenticate succeeded")
             self.set_current_user(user)
             self.redirect("/save")
         else:
-            print "authenticate failed"
+            print("authenticate failed")
             self.redirect("/login")
 
 class UserLogoutHandler(BaseHandler):
@@ -324,7 +324,7 @@ class RunAsHandler(BaseHandler):
         if not sheets:
             return
         else:
-            sheets = urllib.unquote(sheets)
+            sheets = urllib.parse.unquote(sheets)
             logging.info(sheets)
             lis = sheets.split(",")
             
@@ -432,7 +432,7 @@ class WebAppHandler(BaseHandler):
             path = ["home",user,"securestore","inapp", app]
             dirobj = cloud.storage.storage.getFile(dirpath)
             if (not dirobj) or (len(dirobj.files) == 0):
-                print "no directory found, no inapp initialised"
+                print("no directory found, no inapp initialised")
                 self.finish(dict(result="no"))
                 return
             fileobj = cloud.storage.storage.getFile(path)
@@ -452,7 +452,7 @@ class WebAppHandler(BaseHandler):
         path = ["home",user,"securestore","inapp", app]
         dirobj = cloud.storage.storage.getFile(dirpath)
         if (not dirobj) or (len(dirobj.files) == 0):
-            print "no directory found, creating.."
+            print("no directory found, creating..")
             cloud.storage.storage.createDir(dirpath)
         # dir is now created
         fileobj = cloud.storage.storage.getFile(path)
@@ -603,7 +603,7 @@ class WebAppHandler(BaseHandler):
             logging.info("user is "+user)
             logging.info("appname is "+app)
             if cloud.authenticate.user.authenticate_user(user,password):
-                print "authenticate succeeded"
+                print("authenticate succeeded")
                 self.set_current_user(user)
                 #self.finish(dict(result="ok"))
                 username = self.get_current_user()
@@ -655,7 +655,7 @@ class WebAppHandler(BaseHandler):
                       cloud.storage.storage.updateFile(path,app)
                       self.finish(dict(result="ok"))
             else:
-                print "authenticate failed"
+                print("authenticate failed")
                 self.finish(dict(result="fail"))
         if action == "logout":
             self.clear_cookie("user")
@@ -763,7 +763,7 @@ class WebAppHandler(BaseHandler):
             path = ["home",user,"securestore","inapp",appname]
             dirobj = cloud.storage.storage.getFile(dirpath)
             if (not dirobj) or (len(dirobj.files) == 0):
-                print "no directory found, creating.."
+                print("no directory found, creating..")
                 cloud.storage.storage.createDir(dirpath)
             # dir is now created
             fileobj = cloud.storage.storage.getFile(path)
@@ -778,9 +778,9 @@ class WebAppHandler(BaseHandler):
             else:
                 filedata = fileobj.data
                 consumed = filedata['consumed']
-                print "consumed was ",consumed
+                print("consumed was ",consumed)
                 consumed += 1
-                print "consumed now ", consumed
+                print("consumed now ", consumed)
                 message = {}
                 message['consumed'] = consumed
                 message['own'] = filedata['own']
@@ -791,7 +791,7 @@ class WebAppHandler(BaseHandler):
                     message['consumed'] = 0
                     message['own'] = 0
                     cloud.storage.storage.updateFile(path,message)
-                    print "save exhausted " , message
+                    print("save exhausted " , message)
                     self.finish(dict(result="ok"))
                     return
                 self.finish(dict(result="ok"))
@@ -902,7 +902,7 @@ version:1.5
         fname = self.get_argument('pagename')
         cmdname = os.path.join(self.application.settings["util_path"],"msnparse.py")
         #logging.info("cmd is %s"%cmdname)
-        sheetstr = commands.getoutput("python %s %s"%(cmdname,ticker))
+        sheetstr = subprocess.getoutput("python %s %s"%(cmdname,ticker))
         template = self.db.query("SELECT * FROM StockTemplates WHERE user = %s AND fname = %s",user,fname)
         #logging.info(sheetstr)
         #logging.info("---")
@@ -960,7 +960,7 @@ class MessageMixin:
     def wait_for_messages(self, callback, cursor=None):
         if cursor:
             index = 0
-            for i in xrange(len(self.cache)):
+            for i in range(len(self.cache)):
                 index = len(self.cache) - i - 1
                 if self.cache[index]["id"] == cursor: break
             recent = self.cache[index + 1:]
@@ -1049,7 +1049,7 @@ class MultiSheetHandler(BaseHandler):
         fname = self.get_argument('pagename')
         cmdname = os.path.join(self.application.settings["util_path"],"msnparse.py")
         logging.info("cmd is %s"%cmdname)
-        sheetstr = commands.getoutput("python %s %s"%(cmdname,ticker))
+        sheetstr = subprocess.getoutput("python %s %s"%(cmdname,ticker))
         #template = self.db.query("SELECT * FROM StockTemplates WHERE user = %s AND fname = %s",user,fname)
         #logging.info(sheetstr)
         #logging.info("---")
@@ -1091,7 +1091,7 @@ class UploadTestHandler(BaseHandler):
         f.close()
         #logging.info("wrote "+fullfname)
         cmdname = "./excelinterop/phpexcel/socialcalc/import.php"
-        output = commands.getoutput("php %s %s"%(cmdname, fullfname))
+        output = subprocess.getoutput("php %s %s"%(cmdname, fullfname))
         #logging.info("output is "+output)
         i = output.index("$---$")
         wbook = output[i+5:]
@@ -1140,7 +1140,7 @@ class UploadHandler(BaseHandler):
         f.close()
         #logging.info("wrote "+fullfname)
         cmdname = "./excelinterop/phpexcel/socialcalc/import.php"
-        output = commands.getoutput("php %s %s"%(cmdname, fullfname))
+        output = subprocess.getoutput("php %s %s"%(cmdname, fullfname))
         #logging.info("output is "+output)
         i = output.index("$---$")
         wbook = output[i+5:]
@@ -1188,7 +1188,7 @@ class DownloadFileHandler(BaseHandler):
             inpfile = fullfname+".b"
         
             f = codecs.open(inpfile,encoding='utf-8',mode="w+")
-            s = unicode(self.get_argument('content'))
+            s = str(self.get_argument('content'))
             #logging.info(s)
             f.write(s)
             f.close()
@@ -1196,7 +1196,7 @@ class DownloadFileHandler(BaseHandler):
             logging.info(outfile)
             logging.info(inpfile)
             cmdname = "./excelinterop/phpexcel/socialcalc/export.php"
-            output = commands.getoutput("php %s %s %s %s"%(cmdname, inpfile, outfile, type))
+            output = subprocess.getoutput("php %s %s %s %s"%(cmdname, inpfile, outfile, type))
             logging.info(output)
             content = open(outfile).read()
         elif (type == "PDF"):
@@ -1205,7 +1205,7 @@ class DownloadFileHandler(BaseHandler):
             fullfname = "/home/ubuntu/tmp/tmp"
             inpfile = fullfname+".html"
             f = codecs.open(inpfile,encoding='utf-8',mode="w+")
-            s = unicode(self.get_argument('content'))
+            s = str(self.get_argument('content'))
             #logging.info(s)
             f.write(s)
             f.close()
@@ -1213,7 +1213,7 @@ class DownloadFileHandler(BaseHandler):
             logging.info(outfile)
             logging.info(inpfile)
             cmdname = "/usr/local/bin/wkhtmltopdf.sh"
-            output = commands.getoutput("%s %s %s"%(cmdname, inpfile, outfile))
+            output = subprocess.getoutput("%s %s %s"%(cmdname, inpfile, outfile))
             logging.info(output)
             content = open(outfile).read()
         else:
@@ -1392,7 +1392,7 @@ class HtmlToPdfHandler(BaseHandler):
         logging.info(outfile)
         logging.info(inpfile)
         cmdname = "/usr/local/bin/wkhtmltopdf.sh"
-        output = commands.getoutput("%s %s %s"%(cmdname, inpfile, outfile))
+        output = subprocess.getoutput("%s %s %s"%(cmdname, inpfile, outfile))
         if action:
             pdfurl="http://"+self.request.host+"/htmltopdf?fname=%s&action=%s"%(fname,action)
         else:
@@ -1414,7 +1414,7 @@ class DownloadHandler(BaseHandler):
         logging.info(outfile)
         logging.info(inpfile)
         cmdname = "./excelinterop/phpexcel/socialcalc/export.php"
-        output = commands.getoutput("php %s %s %s %s"%(cmdname, inpfile, outfile, type))
+        output = subprocess.getoutput("php %s %s %s %s"%(cmdname, inpfile, outfile, type))
         logging.info(output)
         sessionfiledownloads["file"] = outfile
         sessionfiledownloads["type"] = type
@@ -1453,7 +1453,7 @@ class ImportHandler(BaseHandler):
             f.close()
             #logging.info("wrote "+fullfname)
             cmdname = "./excelinterop/phpexcel/socialcalc/import.php"
-            output = commands.getoutput("php %s %s"%(cmdname, fullfname))
+            output = subprocess.getoutput("php %s %s"%(cmdname, fullfname))
             #logging.info("output is "+output)
             i = output.index("$---$")
             wbook = output[i+5:]
@@ -1498,7 +1498,7 @@ class TickerJsonHandler(BaseHandler):
         logging.info("ticker is ",tick1,tick2,tick3)
         cmdname = os.path.join(self.application.settings["util_path"],"msnparse.py")
         logging.info("cmd is %s"%cmdname)
-        sheetstr = commands.getoutput("python %s %s %s %s %s"%(cmdname,"json",tick1,tick2,tick3))
+        sheetstr = subprocess.getoutput("python %s %s %s %s %s"%(cmdname,"json",tick1,tick2,tick3))
         self.finish(dict(data=sheetstr,result="ok"))        
 
 
@@ -1515,7 +1515,7 @@ class TickerHandler(BaseHandler):
 
         cmdname = os.path.join(self.application.settings["util_path"],"msnparse.py")
         logging.info("cmd is %s"%cmdname)
-        sheetstr = commands.getoutput("python %s %s %s"%(cmdname,"none",ticker))
+        sheetstr = subprocess.getoutput("python %s %s %s"%(cmdname,"none",ticker))
         #sheetstr = util.simpledb.getFromSimpleDb(ticker)
         tickdata = util.ystockquote.get_all(ticker)
         logging.info(tickdata)
@@ -1533,7 +1533,7 @@ class TenYearDataHandler(BaseHandler):
 
         cmdname = os.path.join(self.application.settings["util_path"],"tenyeardata.py")
         logging.info("cmd is %s"%cmdname)
-        sheetstr = commands.getoutput("python %s %s"%(cmdname,ticker))
+        sheetstr = subprocess.getoutput("python %s %s"%(cmdname,ticker))
         self.finish(dict(data=sheetstr,result="ok"))        
 
 class InsertHandler(BaseHandler):
@@ -1803,7 +1803,7 @@ class DropBoxHandler(BaseHandler):
         try:
             logging.info(repr(request.arguments))
             req = {}
-            for i in request.arguments.keys():
+            for i in list(request.arguments.keys()):
                 req[i] = request.arguments[i][0]
             logging.info(repr(req))
             access_token, user_id, url_state = \
@@ -1826,19 +1826,19 @@ class DropBoxHandler(BaseHandler):
 
             #self.finish(dict(token=access_token))
             
-        except dropbox.client.DropboxOAuth2Flow.BadRequestException, e:
+        except dropbox.client.DropboxOAuth2Flow.BadRequestException as e:
             logging.info("bad_request")            
 
-        except dropbox.client.DropboxOAuth2Flow.BadStateException, e:
+        except dropbox.client.DropboxOAuth2Flow.BadStateException as e:
             # Start the auth flow again.
             redirect_to("/dropbox-auth-start")
-        except dropbox.client.DropboxOAuth2Flow.CsrfException, e:
+        except dropbox.client.DropboxOAuth2Flow.CsrfException as e:
             logging.info("csrf exception")            
 
-        except dropbox.client.DropboxOAuth2Flow.NotApprovedException, e:
+        except dropbox.client.DropboxOAuth2Flow.NotApprovedException as e:
             logging.info("not approved")            
             self.write("Please approve the app in order to login to Dropbox.")
-        except dropbox.client.DropboxOAuth2Flow.ProviderException, e:
+        except dropbox.client.DropboxOAuth2Flow.ProviderException as e:
             logging.info("Auth error: %s" % (e,))
 
         
@@ -1889,18 +1889,18 @@ class DropBoxHandler(BaseHandler):
                 data = self.get_argument('string')
                 fname = self.get_argument('name')
                 response = client.put_file(fname, data)
-                print "uploaded: ", response
+                print("uploaded: ", response)
                 self.finish(dict(data="Done"))
-            except dropbox.rest.ErrorResponse, e:
+            except dropbox.rest.ErrorResponse as e:
                 logging.info(e)
                 self.finish(dict(data="Error"))
 
         elif action == 'listdir':
             try:
                 folder_metadata = client.metadata('/')
-                print "List of files:", folder_metadata
+                print("List of files:", folder_metadata)
                 self.finish(folder_metadata)
-            except dropbox.rest.ErrorResponse, e:
+            except dropbox.rest.ErrorResponse as e:
                 logging.info(e)
                 self.finish(dict(data="Error"))
 
@@ -1910,9 +1910,9 @@ class DropBoxHandler(BaseHandler):
                 f = client.get_file(self.get_argument('fname'))
                 fileData = f.read()
                 f.close()
-                print "downloaded file"
+                print("downloaded file")
                 self.finish(dict(text=fileData))
-            except dropbox.rest.ErrorResponse, e:
+            except dropbox.rest.ErrorResponse as e:
                 logging.info(e)
                 self.finish(dict(data="Error"))
 
@@ -1920,7 +1920,7 @@ class DropBoxHandler(BaseHandler):
             try:
                 metadata = client.file_delete(self.get_argument('fname'))
                 self.finish(dict(data="Done"))
-            except dropbox.rest.ErrorResponse, e:
+            except dropbox.rest.ErrorResponse as e:
                 logging.info(e)
                 self.finish(dict(data="Error"))
  
@@ -1934,7 +1934,7 @@ class InAppHandler(BaseHandler):
     def post(self):
         app = self.get_argument('app')
         user = self.get_argument('user')
-        print "app: "+app+", user: "+user
+        print("app: "+app+", user: "+user)
         # self.db.execute("UPDATE UserSheets SET purchased = 1 WHERE user = %s AND fname = %s", user, fname)
         check = self.db.query("SELECT id FROM purchases WHERE app = %s AND user = %s", app, user)
         if check:
@@ -2016,7 +2016,7 @@ class RestoreInAppHandler(BaseHandler):
             path = ["home",user,"securestore","restore", app]
             dirobj = cloud.storage.storage.getFile(dirpath)
             if (not dirobj) or (len(dirobj.files) == 0):
-                print "no directory found, no inapp initialised"
+                print("no directory found, no inapp initialised")
                 self.finish(dict(result="no"))
                 return
             fileobj = cloud.storage.storage.getFile(path)
@@ -2036,10 +2036,10 @@ class RestoreInAppHandler(BaseHandler):
         action = self.get_argument('action')
         appname = self.get_argument('appname')
         content = self.get_argument('content' ,None)
-        print "app is", appname
-        print "action is ", action
+        print("app is", appname)
+        print("action is ", action)
         if action == "inapp":
-            print "items are ",content
+            print("items are ",content)
             path = ["home",user,"securestore","restore",appname]
             dirpath = ["home",user,"securestore","restore"]
             dirobj = cloud.storage.storage.getFile(dirpath)
@@ -2057,7 +2057,7 @@ class RestoreInAppHandler(BaseHandler):
 
 class FinanceRecordKeeper(BaseHandler):
     def get(self):
-        print "Get of Finance Record"
+        print("Get of Finance Record")
         action = self.get_argument('action')
         user = self.get_current_user()
         if user == None:
@@ -2102,10 +2102,10 @@ class FinanceRecordKeeper(BaseHandler):
 
 class BusinessRecordKeeper(BaseHandler):
     def get(self):
-        print "Get of Business Record"
+        print("Get of Business Record")
         self.finish(dict(result="ok"))
     def post(self):
-        print "Post of Business Record"
+        print("Post of Business Record")
         self.finish(dict(result="ok"))
         
 
