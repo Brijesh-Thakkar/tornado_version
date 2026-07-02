@@ -4,14 +4,11 @@ Cloud Storage Infrastructure
 using amazon S3
 """
 
-import boto
+import boto3
+from botocore.client import Config
 import json
 import os
 import logging
-
-from boto.s3.connection import S3Connection, OrdinaryCallingFormat
-from boto.s3.key import Key
-import boto.auth
 
 
 # S3 connection
@@ -21,11 +18,12 @@ aws_secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
 import os
 os.environ['S3_USE_SIGV4'] = 'True'
 
-connection = S3Connection(
+connection = boto3.resource(
+    's3',
     aws_access_key_id=aws_access_key,
     aws_secret_access_key=aws_secret_key,
-    host='s3.amazonaws.com',
-    calling_format=OrdinaryCallingFormat()
+    endpoint_url='https://s3.amazonaws.com',
+    config=Config(s3={'addressing_style': 'path'})
 )
 AspiringStorageBucket = "mc2-app-storage-useast1"
 
@@ -45,9 +43,8 @@ def putItem(path, filedata, bucket_name=None):
         if bucket_name is None:
             bucket_name = AspiringStorageBucket
         bucket = getBucket(bucket_name)
-        k = Key(bucket)
-        k.key = path
-        k.set_contents_from_string(filedata)
+        body = filedata.encode('utf-8') if isinstance(filedata, str) else filedata
+        bucket.Object(path).put(Body=body)
         return True
     except Exception as e:
         logging.error("putItem failed for path=%s: %s" % (path, str(e)))
@@ -60,9 +57,7 @@ def getItem(path, bucket_name=None):
         if bucket_name==None:
             bucket_name = AspiringStorageBucket
         bucket = getBucket(bucket_name)
-        k = Key(bucket)
-        k.key = path
-        data = k.get_contents_as_string()
+        data = bucket.Object(path).get()['Body'].read()
         return data
     except:
         return None
@@ -74,9 +69,8 @@ def existsItem(path, bucket_name=None):
         if bucket_name==None:
             bucket_name = AspiringStorageBucket
         bucket = getBucket(bucket_name)
-        k = Key(bucket)
-        k.key = path
-        return k.exists()
+        bucket.Object(path).load()
+        return True
     except:
         return False
 
@@ -87,16 +81,14 @@ def deleteItem(path, bucket_name=None):
     if bucket_name==None:
         bucket_name = AspiringStorageBucket
     bucket = getBucket(bucket_name)
-    k = Key(bucket)
-    k.key = path
-    k.delete()
+    bucket.Object(path).delete()
     return True
 
 #  The following are helpers to implement the API
 
 def createBucket(bucketname):
     conn = getConnection()
-    bucket = conn.create_bucket(bucketname)
+    bucket = conn.create_bucket(Bucket=bucketname)
     return bucket
 
 def getBucket(bucketname):
@@ -104,7 +96,8 @@ def getBucket(bucketname):
         conn = getConnection()
         if conn is None:
             raise Exception("S3 connection is not initialised")
-        bucket = conn.get_bucket(bucketname)
+        conn.meta.client.head_bucket(Bucket=bucketname)
+        bucket = conn.Bucket(bucketname)
         return bucket
     except Exception as e:
         logging.error("getBucket failed for bucket=%s: %s" % (bucketname, str(e)))

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Aspiring Investments
 #
@@ -32,7 +32,6 @@ from util.amazon_ses import AmazonSES,EmailMessage
 
 from collections import namedtuple
 import urllib.request, urllib.parse, urllib.error
-import dropbox
 
 import time
 import base64
@@ -958,7 +957,6 @@ class MessageNewHandler(BaseHandler):
 # This is the long poller
 #
 class MessageUpdateHandler(BaseHandler):
-    @tornado.web.asynchronous
     def post(self):
         #create a new channel if id=1 and no channel exists
         cursor = self.get_argument("cursor", None)
@@ -967,7 +965,7 @@ class MessageUpdateHandler(BaseHandler):
         #logging.info("long poll id=%s,session=%s"%(id,session))
         channel = channels.get(session,None)
         if channel:
-            channel.wait_for_messages(self.async_callback(self.on_new_messages),
+            channel.wait_for_messages(self.on_new_messages,
                                       cursor=cursor)
 
     def on_new_messages(self, messages):
@@ -1680,6 +1678,7 @@ class DropBoxHandler(BaseHandler):
     # Test code for automatic redirection from auth URL
 
     def get_dropbox_auth_flow(self, sessionid, csrftok=None):
+        import dropbox
         redirect_uri = "https://%s"%(self.request.host)+"/dropbox?action=dropbox-auth-finish"
         #redirect_uri = "/dropbox?action=dropbox-auth-finish"
         logging.info("redirect_uri is:%s",redirect_uri)
@@ -1701,6 +1700,7 @@ class DropBoxHandler(BaseHandler):
 
     # URL handler for /dropbox-auth-finish
     def dropbox_auth_finish(self, sessionid, request):
+        import dropbox
         try:
             logging.info(repr(request.arguments))
             req = {}
@@ -1744,6 +1744,13 @@ class DropBoxHandler(BaseHandler):
 
         
     def get(self):
+        try:
+            import dropbox
+        except ImportError:
+            self.set_status(501)
+            self.write("Dropbox integration is temporarily unavailable during the Python 3 migration.")
+            self.finish()
+            return
         action = self.get_argument('action');
         session = self.get_cookie('session');
         logging.info('Action: '+action+', session: '+str(session))
@@ -1780,6 +1787,13 @@ class DropBoxHandler(BaseHandler):
     #        self.finish(dict(token=access_token))
 
     def post(self):
+        try:
+            import dropbox
+        except ImportError:
+            self.set_status(501)
+            self.write("Dropbox integration is temporarily unavailable during the Python 3 migration.")
+            self.finish()
+            return
         action = self.get_argument('action')
         #token = self.get_argument('dbToken')
         token = self.get_cookie('dbToken')

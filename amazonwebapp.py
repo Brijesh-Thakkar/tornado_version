@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Aspiring Investments
 #
@@ -18,7 +18,6 @@ import traceback
 import urllib.request, urllib.parse, urllib.error
 import uuid
 
-import dropbox
 import memcache
 import tornado.auth
 import tornado.httpserver
@@ -448,6 +447,7 @@ class DropBoxHandler(BaseHandler):
     # Test code for automatic redirection from auth URL
 
     def get_dropbox_auth_flow(self, sessionid, csrftok=None):
+        import dropbox
         sessobj = WebappSession(sessionid, self.application.mc)
         fname = sessobj.get('appName')
         redirect_uri = "https://%s"%(self.request.host)+"/webapps/"+fname+"/dropbox?action=dropbox-auth-finish"
@@ -480,6 +480,7 @@ class DropBoxHandler(BaseHandler):
 
     # URL handler for /dropbox-auth-finish
     def dropbox_auth_finish(self, sessionid, request):
+        import dropbox
         sessobj = WebappSession(sessionid, self.application.mc)
         try:
             logging.info(repr(request.arguments))
@@ -512,6 +513,13 @@ class DropBoxHandler(BaseHandler):
 
         
     def get(self, **params):
+        try:
+            import dropbox
+        except ImportError:
+            self.set_status(501)
+            self.write("Dropbox integration is temporarily unavailable during the Python 3 migration.")
+            self.finish()
+            return
         action = self.get_argument('action');
         #sessionid = str(self.get_argument('sessionid'))
         sessionid = self.get_cookie('session')
@@ -537,6 +545,13 @@ class DropBoxHandler(BaseHandler):
             self.finish(dict(status=1))
 
     def post(self, **params):
+        try:
+            import dropbox
+        except ImportError:
+            self.set_status(501)
+            self.write("Dropbox integration is temporarily unavailable during the Python 3 migration.")
+            self.finish()
+            return
         action = self.get_argument('action')
         #sessionid = str(self.get_argument('sessionid'))
         sessionid = self.get_cookie('session')        

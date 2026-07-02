@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Aspiring Apps Web Site
 # Ramu Ramamurthy

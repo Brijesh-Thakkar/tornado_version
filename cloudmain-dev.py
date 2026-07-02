@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Aspiring Investments
 #
@@ -32,12 +32,13 @@ from util.amazon_ses import AmazonSES,EmailMessage
 
 from collections import namedtuple
 import urllib.request, urllib.parse, urllib.error
-import dropbox
 import memcache
 
 import time
 import base64
 import sync
+
+import asyncio
 
 #import util.ystockquote
 #import util.simpledb
@@ -77,21 +78,21 @@ class Application(tornado.web.Application):
             (r"/amazonwebapp/(?P<param1>[^\/]+)/randomCode/(?P<param2>[^\/]+)", AmazonWebAppHandler),
             (r"/finrecord", FinanceRecordKeeper),
             (r"/bisrecord", BusinessRecordKeeper),
-            (r"/sync", sync.SyncHandler)
+            (r"/sync", sync.SyncHandler),
 
 
             #(r"/multisheet", MultiSheetHandler),
             #(r"/templates",TemplatesHandler),
             #(r"/stock", StockHandler),
-            #(r"/broadcast", MessageNewHandler),
-            #(r"/updates", MessageUpdateHandler),
+            (r"/broadcast", MessageNewHandler),
+            (r"/updates", MessageUpdateHandler),
             #(r"/sharedsession", SharedSessionHandler),
             #(r"/uploadtest", UploadTestHandler),
 
             #(r"/ticker", TickerHandler),
             #(r"/tenyeardata", TenYearDataHandler),
             #(r"/embed(.*)", EmbedHandler),            
-            #(r"/collaborate(.*)", CollaborateHandler),            
+            (r"/collaborate(.*)", CollaborateHandler),            
             #(r"/share", ShareHandler),
             #(r"/tickerjson", TickerJsonHandler)              
         ]
@@ -957,25 +958,29 @@ class MessageMixin:
         self.fname = fname
         self.nextid = 2;
 
-    def wait_for_messages(self, callback, cursor=None):
+    async def wait_for_messages(self, cursor=None):
         if cursor:
             index = 0
             for i in range(len(self.cache)):
                 index = len(self.cache) - i - 1
-                if self.cache[index]["id"] == cursor: break
+                if self.cache[index]["id"] == cursor:
+                    break
             recent = self.cache[index + 1:]
             if recent:
-                callback(recent)
-                return        
-        self.waiters.append(callback)
+                return recent
+        future = asyncio.get_running_loop().create_future()
+        self.waiters.append(future)
+
+        return await future
 
     def new_messages(self, message):
         logging.info("Sending new message to %r listeners", len(self.waiters))
-        for callback in self.waiters:
+        for future in self.waiters:
             try:
-                callback(message)
-            except:
-                logging.error("Error in waiter callback", exc_info=True)
+                if not future.done():
+                    future.set_result(message)
+            except Exception:
+                logging.exception("Error in waiter future")
         self.waiters = []
         self.cache.extend(message)
         if len(self.cache) > self.cache_size:
@@ -1015,8 +1020,7 @@ class MessageNewHandler(BaseHandler):
 # This is the long poller
 #
 class MessageUpdateHandler(BaseHandler):
-    @tornado.web.asynchronous
-    def post(self):
+    async def post(self):
         #create a new channel if id=1 and no channel exists
         cursor = self.get_argument("cursor", None)
         session = self.get_cookie("session")        
@@ -1024,16 +1028,16 @@ class MessageUpdateHandler(BaseHandler):
         #logging.info("long poll id=%s,session=%s"%(id,session))
         channel = channels.get(session,None)
         if channel:
-            channel.wait_for_messages(self.async_callback(self.on_new_messages),
-                                      cursor=cursor)
+            messages = await channel.wait_for_messages(cursor=cursor)
+            self.finish(dict(messages=messages))
 
-    def on_new_messages(self, messages):
-        # Closed client connection
-        if self.request.connection.stream.closed():
-            return
-        #logging.info(messages)
-        #self.write(messages)
-        self.finish(dict(messages=messages))
+    # def on_new_messages(self, messages):
+    #     # Closed client connection
+    #     if self.request.connection.stream.closed():
+    #         return
+    #     #logging.info(messages)
+    #     #self.write(messages)
+    #     self.finish(dict(messages=messages))
 
 
 class MultiSheetHandler(BaseHandler):
@@ -1779,6 +1783,7 @@ class DropBoxHandler(BaseHandler):
     # Test code for automatic redirection from auth URL
 
     def get_dropbox_auth_flow(self, sessionid, csrftok=None):
+        import dropbox
         redirect_uri = "https://%s"%(self.request.host)+"/dropbox?action=dropbox-auth-finish"
         #redirect_uri = "/dropbox?action=dropbox-auth-finish"
         logging.info("redirect_uri is:%s",redirect_uri)
@@ -1800,6 +1805,7 @@ class DropBoxHandler(BaseHandler):
 
     # URL handler for /dropbox-auth-finish
     def dropbox_auth_finish(self, sessionid, request):
+        import dropbox
         try:
             logging.info(repr(request.arguments))
             req = {}
@@ -1843,6 +1849,13 @@ class DropBoxHandler(BaseHandler):
 
         
     def get(self):
+        try:
+            import dropbox
+        except ImportError:
+            self.set_status(501)
+            self.write("Dropbox integration is temporarily unavailable during the Python 3 migration.")
+            self.finish()
+            return
         action = self.get_argument('action');
         session = self.get_cookie('session');
         logging.info('Action: '+action+', session: '+str(session))
@@ -1879,6 +1892,13 @@ class DropBoxHandler(BaseHandler):
     #        self.finish(dict(token=access_token))
 
     def post(self):
+        try:
+            import dropbox
+        except ImportError:
+            self.set_status(501)
+            self.write("Dropbox integration is temporarily unavailable during the Python 3 migration.")
+            self.finish()
+            return
         action = self.get_argument('action')
         #token = self.get_argument('dbToken')
         token = self.get_cookie('dbToken')
@@ -2112,6 +2132,7 @@ class BusinessRecordKeeper(BaseHandler):
 def main():
     tornado.options.parse_command_line()
     http_server = tornado.httpserver.HTTPServer(Application())
+    print("DEBUG: Starting server on port", options.port)
     http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
 

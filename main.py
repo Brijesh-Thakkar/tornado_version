@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Aspiring Investments
 #
@@ -12,7 +12,35 @@ import logging
 import os.path
 import re
 import tornado.auth
-import tornado.database
+import sys
+import pymysql
+pymysql.install_as_MySQLdb()
+
+# Intercept and patch connect_timeout in PyMySQL connect to support torndb default of 0
+orig_connect = pymysql.connect
+def patched_connect(*args, **kwargs):
+    if kwargs.get("connect_timeout") in (0, None):
+        kwargs.pop("connect_timeout", None)
+    return orig_connect(*args, **kwargs)
+pymysql.connect = patched_connect
+
+# Mock MySQLdb.constants for torndb compatibility
+import MySQLdb.constants
+import pymysql.constants.FIELD_TYPE
+import pymysql.constants.FLAG
+sys.modules['MySQLdb.constants'].FIELD_TYPE = sys.modules['pymysql.constants.FIELD_TYPE']
+sys.modules['MySQLdb.constants'].FLAG = sys.modules['pymysql.constants.FLAG']
+
+# Patch copy.copy to return lists for converters to satisfy torndb import check
+import copy
+orig_copy = copy.copy
+copy.copy = lambda x: {k: [v] for k, v in orig_copy(x).items()} if isinstance(x, dict) and 253 in x else orig_copy(x)
+
+import torndb
+
+# Restore original copy and set native pymysql converters
+copy.copy = orig_copy
+torndb.CONVERSIONS = pymysql.converters.conversions
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
@@ -96,7 +124,7 @@ class Application(tornado.web.Application):
             self.amazonSes = None
             self.fromemail = ""
 
-        self.db = tornado.database.Connection(
+        self.db = torndb.Connection(
             host=options.mysql_host, database=options.mysql_database,
             user=options.mysql_user, password=options.mysql_password)
 
@@ -304,7 +332,6 @@ class MessageNewHandler(BaseHandler):
 # This is the long poller
 #
 class MessageUpdateHandler(BaseHandler):
-    @tornado.web.asynchronous
     def post(self):
         #create a new channel if id=1 and no channel exists
         cursor = self.get_argument("cursor", None)
@@ -313,7 +340,7 @@ class MessageUpdateHandler(BaseHandler):
         #logging.info("long poll id=%s,session=%s"%(id,session))
         channel = channels.get(session,None)
         if channel:
-            channel.wait_for_messages(self.async_callback(self.on_new_messages),
+            channel.wait_for_messages(self.on_new_messages,
                                       cursor=cursor)
 
     def on_new_messages(self, messages):

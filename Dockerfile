@@ -1,6 +1,7 @@
-FROM python:2.7-slim
+FROM python:3.14-slim
 WORKDIR /app
-RUN pip install passlib "dropbox==4.0" boto "python-memcached==1.59" pyopenssl ndg-httpsclient pyasn1
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 ENV S3_USE_SIGV4=True
 EXPOSE 8888
