@@ -42,3 +42,10 @@ local_storage/
 *.sqlite
 *.db
 *.tar.gz
+
+# Node.js & Playwright
+node_modules/
+playwright-report/
+test-results/
+playwright/.cache/
+

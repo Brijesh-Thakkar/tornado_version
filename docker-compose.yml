@@ -1,0 +1,58 @@
+services:
+
+  # ── Shared memcache (session store shared across both app instances) ───────
+  memcache:
+    image: memcached:1.6-alpine
+    networks:
+      - app_network
+    expose:
+      - "11211"
+    restart: unless-stopped
+
+  # ── Tornado application instance 1 ───────────────────────────────────────
+  app1:
+    build: .
+    expose:
+      - "8888"
+    networks:
+      - app_network
+    env_file:
+      - .env
+    environment:
+      - MEMCACHE_HOST=memcache
+    depends_on:
+      - memcache
+    restart: unless-stopped
+
+  # ── Tornado application instance 2 ───────────────────────────────────────
+  app2:
+    build: .
+    expose:
+      - "8888"
+    networks:
+      - app_network
+    env_file:
+      - .env
+    environment:
+      - MEMCACHE_HOST=memcache
+    depends_on:
+      - memcache
+    restart: unless-stopped
+
+  # ── Nginx reverse proxy (only service that binds a host port) ─────────────
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "8080:80"
+    networks:
+      - app_network
+    volumes:
+      - ./configs/nginx.docker.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app1
+      - app2
+    restart: unless-stopped
+
+networks:
+  app_network:
+    driver: bridge

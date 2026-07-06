@@ -133,7 +133,8 @@ class Application(tornado.web.Application):
         #self.db = tornado.database.Connection(
         #    host=options.mysql_host, database=options.mysql_database,
         #    user=options.mysql_user, password=options.mysql_password)
-        self.mc = memcache.Client(['127.0.0.1'], debug=0)
+        memcache_host = os.environ.get('MEMCACHE_HOST', '127.0.0.1')
+        self.mc = memcache.Client([memcache_host], debug=0)
 
 class BaseHandler(tornado.web.RequestHandler):
     @property

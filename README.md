@@ -85,9 +85,177 @@ python3 main.py --port=8080
 
 ---
 
-# Running with Docker
+# Docker Compose Deployment (Recommended)
 
-The application can be built and run in a Docker container using the current `Dockerfile` which is built on the `python:3.14-slim` base image:
+## Architecture
+
+```
+                     ┌─────────────────────────────────────────┐
+                     │         Docker bridge network            │
+                     │         (tornado_version_app_network)    │
+                     │                                          │
+Internet ──► :8080 ──►  nginx:1.27-alpine (reverse proxy)      │
+                     │      │ round-robin load balance          │
+                     │      ├──────────────┐                   │
+                     │      ▼              ▼                    │
+                     │  app1:8888      app2:8888                │
+                     │  (Tornado)      (Tornado)                │
+                     │      │              │                    │
+                     │      └──────┬───────┘                   │
+                     │             ▼                            │
+                     │      memcache:11211                      │
+                     │   (shared session store)                 │
+                     └─────────────────────────────────────────┘
+```
+
+- **Nginx** is the only service that binds a host port (`8080:80`).
+- **app1** and **app2** are internal only (exposed on port 8888 within the network).
+- **memcache** is the shared session store — both Tornado instances read/write the same session data, so sessions are preserved regardless of which instance handles a request.
+- All four services communicate over a private Docker bridge network via DNS hostnames (`app1`, `app2`, `memcache`). No hardcoded IPs.
+
+## Quick Start
+
+```bash
+# 1. Copy the example env file and fill in your credentials
+cp .env.example .env
+# edit .env — set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, COOKIE_SECRET
+
+# 2. Start everything
+docker compose up -d --build
+
+# 3. Open the app
+open http://localhost:8080/login
+```
+
+## How to Stop
+
+```bash
+docker compose down
+```
+
+## How to Rebuild After Code Changes
+
+```bash
+docker compose up -d --build
+```
+
+## How to Scale (add more Tornado instances)
+
+```bash
+docker compose up -d --scale app1=1 --scale app2=1
+# or add a third instance by duplicating the app2 block in docker-compose.yml
+# and adding it to the nginx upstream block in configs/nginx.docker.conf
+```
+
+## How to Inspect Logs
+
+```bash
+# All services
+docker compose logs -f
+
+# Specific service
+docker compose logs -f app1
+docker compose logs -f nginx
+
+# Nginx access log (includes which upstream handled each request)
+docker compose logs nginx | grep upstream
+```
+
+## How to Debug
+
+```bash
+# Container shell
+docker exec -it tornado_version-app1-1 bash
+
+# Check nginx config validity
+docker exec tornado_version-nginx-1 nginx -t
+
+# Check container IPs
+docker inspect tornado_version-app1-1 | grep IPAddress
+
+# Test memcache connectivity from app container
+docker exec tornado_version-app1-1 python3 -c "
+import memcache, os
+mc = memcache.Client([os.environ['MEMCACHE_HOST']])
+mc.set('probe', 'ok')
+print(mc.get('probe'))
+"
+```
+
+## How Nginx Load Balancing Works
+
+The upstream block in `configs/nginx.docker.conf` uses default round-robin:
+
+```nginx
+upstream tornado_app {
+    server app1:8888;
+    server app2:8888;
+    keepalive 32;
+}
+```
+
+Every incoming HTTP request is forwarded to the next server in sequence (app1 → app2 → app1 → ...). Docker's built-in DNS resolver handles name-to-IP translation, so no hardcoded IPs are needed.
+
+## Session Persistence Across Instances
+
+The application uses memcache for session storage (via `python-memcached`). Rather than each instance having its own local memcache daemon (which would break sessions when nginx routes to the other instance), both containers point to the single shared `memcache` container via the `MEMCACHE_HOST=memcache` environment variable. This means:
+
+- A user that logs in via app1 will be recognized by app2 on the next request.
+- No sticky sessions are required.
+- If memcache restarts, active sessions are lost (memcache is volatile by design).
+
+## WebSocket / Long-Poll Support
+
+The nginx config includes explicit WebSocket upgrade rules for real-time endpoints:
+
+```nginx
+location /updates   { proxy_set_header Upgrade $http_upgrade; ... }
+location /broadcast { proxy_set_header Upgrade $http_upgrade; ... }
+location /collaborate { proxy_set_header Upgrade $http_upgrade; ... }
+```
+
+`proxy_read_timeout 86400s` (24 hours) prevents nginx from closing long-lived connections prematurely.
+
+## How to Deploy to EC2
+
+```bash
+# 1. On your EC2 instance, install Docker and Docker Compose
+sudo apt-get update
+sudo apt-get install -y docker.io docker-compose-plugin
+sudo usermod -aG docker ubuntu
+
+# 2. Clone the repo on the instance
+git clone <repo-url>
+cd tornado_version
+git checkout py3-tornado6-upgrade
+
+# 3. Set environment variables
+cp .env.example .env
+nano .env  # fill in real AWS credentials and a strong COOKIE_SECRET
+
+# 4. If you want port 80 (not 8080), edit docker-compose.yml:
+#    ports: ["80:80"]
+# Then run:
+docker compose up -d --build
+
+# 5. Open EC2 security group port 8080 (or 80) to 0.0.0.0/0
+# 6. Access via http://<EC2_PUBLIC_IP>:8080/login
+```
+
+For port 80 on EC2, either change `"8080:80"` to `"80:80"` in `docker-compose.yml`, or put an ALB/CloudFront in front that terminates on port 80 and forwards to 8080.
+
+## How to Troubleshoot
+
+| Symptom | Diagnosis | Fix |
+|---------|-----------|-----|
+| nginx won't start | Config error | `docker exec nginx nginx -t` |
+| App returns 502 Bad Gateway | Tornado not running | `docker compose logs app1 app2` |
+| Sessions lost between requests | Memcache down | `docker compose ps memcache` |
+| Port 8080 already in use | Host conflict | Change `"8080:80"` in `docker-compose.yml` |
+| Build fails at pip install | Network timeout | `docker compose build --no-cache` |
+| Credentials file warning | Normal in Docker | Provide env vars in `.env` instead |
+
+## Running with Docker (Single Container — Dev Only)
 
 ```bash
 # Build the Docker image
@@ -115,6 +283,7 @@ The application can be configured via environment variables (see `.env.example` 
 | `AWS_SECRET_ACCESS_KEY` | Yes (for S3/SES) | IAM secret access key for AWS authentication |
 | `COOKIE_SECRET` | No | Random string used for secure Tornado session signing. Defaults to `'fallback-local-dev-secret'` if not provided in development. |
 | `S3_USE_SIGV4` | No | Forces S3 Signature Version 4. Initialized to `True` in code and Docker config. |
+| `MEMCACHE_HOST` | No | Hostname of the memcache server. Defaults to `127.0.0.1`. Set to `memcache` in Docker Compose. |
 | `DROPBOX_KEY` | No | App Key for Dropbox OAuth authentication. |
 | `DROPBOX_SECRET` | No | App Secret for Dropbox OAuth authentication. |
 
