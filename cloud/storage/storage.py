@@ -289,6 +289,20 @@ def deleteFile(path):
         return False
     return True
 
+##
+## path is list, query is a string
+##
+def searchFiles(path, query):
+    directory = getFile(path)
+    if directory is None or not isinstance(directory, Directory):
+        return []
+    query_lower = query.strip().lower()
+    matches = []
+    for f in directory.files:
+        if query_lower in f.fname.lower():
+            matches.append(f)
+    return matches
+
 
 #### The following are unit tests
 

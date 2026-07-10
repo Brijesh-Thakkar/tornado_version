@@ -58,6 +58,7 @@ class Application(tornado.web.Application):
         handlers = [
             (r"/dev", HomeHandler),
             (r"/save", SaveHandler),
+            (r"/search", SearchHandler),
             (r"/runas", RunAsHandler),
             (r"/runasemailer",RunAsEmailHandler),            
             (r"/usersheet", UserSheetHandler),
@@ -406,6 +407,21 @@ class SaveHandler(BaseHandler):
             else:
                 cloud.storage.storage.updateFile(path,sheetstr)                
         self.finish(dict(data="Done"))        
+
+class SearchHandler(BaseHandler):
+    def get(self):
+        user = self.get_current_user()
+        if user == None:
+            #this cannot happen
+            self.redirect("/dev")
+            return            
+        query = self.get_argument("q", "").strip()
+        path = ["home", user]
+        entries = cloud.storage.storage.searchFiles(path, query)
+        argument = {}
+        argument["user"] = user
+        argument["entries"] = entries
+        self.render("allusersheets.html", argument=argument)
 
 class WebAppHandler(BaseHandler):
     # add error cases also
