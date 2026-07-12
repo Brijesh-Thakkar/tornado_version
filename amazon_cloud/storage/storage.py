@@ -282,7 +282,7 @@ def unitTestItems():
     print(getItem("foobar2"))    
 
 def unitTestItemsInBucket():
-    bkt_name = "aspiring-pdf-files"
+    bkt_name = os.getenv("PDF_S3_BUCKET", "aspiring-pdf-files")
     putItem("foobar1","test1", bkt_name)
     print(existsItem("foobar1", bkt_name))
     print(getItem("foobar1", bkt_name))

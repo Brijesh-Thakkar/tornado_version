@@ -5,7 +5,7 @@ import time
 import cloud.storage.storage
 
 html_bucket = "aspiring-html-files"
-pdf_bucket = "aspiring-pdf-files"
+pdf_bucket = os.getenv("PDF_S3_BUCKET", "aspiring-pdf-files")
 pdf_path = "/home/ubuntu/tmp/htmltopdf"
 
 def sorted_ls(path):

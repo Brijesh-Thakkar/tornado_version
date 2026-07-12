@@ -6,24 +6,33 @@ using amazon S3
 
 import boto3
 from botocore.client import Config
+from botocore.exceptions import ClientError
 import json
 import os
 import logging
 
 
-# S3 connection
 aws_access_key = os.environ.get('AWS_ACCESS_KEY_ID')
 aws_secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+# Used only when region discovery fails (no credentials, bucket unreachable, etc.).
+_default_region = os.environ.get('AWS_DEFAULT_REGION', 'us-east-1')
 
-import os
-os.environ['S3_USE_SIGV4'] = 'True'
+# region → boto3.resource  (populated lazily, one entry per region encountered)
+_resources = {}
 
-connection = boto3.resource(
+# bucket_name → region string  (populated on first getBucket() call for each bucket)
+_bucket_regions = {}
+
+# Single lightweight client used only for region discovery.  Uses the global
+# path-style endpoint so S3 returns 301 + x-amz-bucket-region for any bucket
+# that is not in us-east-1, without requiring s3:GetBucketLocation permission.
+_probe_client = boto3.client(
     's3',
     aws_access_key_id=aws_access_key,
     aws_secret_access_key=aws_secret_key,
+    region_name='us-east-1',
     endpoint_url='https://s3.amazonaws.com',
-    config=Config(s3={'addressing_style': 'path'})
+    config=Config(s3={'addressing_style': 'path'}),
 )
 AspiringStorageBucket = "mc2-app-storage-useast1"
 
@@ -91,21 +100,69 @@ def createBucket(bucketname):
     bucket = conn.create_bucket(Bucket=bucketname)
     return bucket
 
-def getBucket(bucketname):
+def _discover_region(bucketname):
+    """Return the AWS region that owns bucketname.
+
+    Strategy: call HeadBucket against the global path-style endpoint.
+    - Non-us-east-1 bucket  → S3 returns 301 with x-amz-bucket-region header.
+    - us-east-1 bucket      → S3 returns 200 or 403; header is still present.
+    - No credentials / network error → fall back to _default_region.
+
+    No s3:GetBucketLocation permission is needed; the header is returned even
+    for 301/403 responses.
+    """
     try:
-        conn = getConnection()
-        if conn is None:
-            raise Exception("S3 connection is not initialised")
-        conn.meta.client.head_bucket(Bucket=bucketname)
-        bucket = conn.Bucket(bucketname)
-        return bucket
+        r = _probe_client.head_bucket(Bucket=bucketname)
+        # 200: read BucketRegion from the response dict (always present on 200).
+        return r.get('BucketRegion', 'us-east-1')
+    except ClientError as e:
+        region = e.response.get('ResponseMetadata', {}) \
+                           .get('HTTPHeaders', {}) \
+                           .get('x-amz-bucket-region')
+        if region:
+            return region
+        logging.warning(
+            "region discovery failed for bucket=%s (%s); using %s",
+            bucketname, e, _default_region,
+        )
+        return _default_region
     except Exception as e:
-        logging.error("getBucket failed for bucket=%s: %s" % (bucketname, str(e)))
-        raise
+        logging.warning(
+            "region discovery failed for bucket=%s (%s); using %s",
+            bucketname, e, _default_region,
+        )
+        return _default_region
+
+
+def _resource_for_region(region):
+    """Return a cached boto3.resource for the given region."""
+    if region not in _resources:
+        _resources[region] = boto3.resource(
+            's3',
+            aws_access_key_id=aws_access_key,
+            aws_secret_access_key=aws_secret_key,
+            region_name=region,
+        )
+    return _resources[region]
+
+
+def getBucket(bucketname):
+    """Return a boto3 Bucket wired to the correct regional resource.
+
+    Region is discovered on the first call per bucket name and cached
+    for the lifetime of the process.  Subsequent calls are pure dict lookups.
+    """
+    if bucketname not in _bucket_regions:
+        region = _discover_region(bucketname)
+        _bucket_regions[bucketname] = region
+        logging.info("bucket %s resolved to region %s", bucketname, region)
+    return _resource_for_region(_bucket_regions[bucketname]).Bucket(bucketname)
+
 
 def getConnection():
-    # may need to check if conn is alive etc
-    return connection
+    # Kept for backward compatibility (used by createBucket).
+    # Returns a resource for the default region.
+    return _resource_for_region(_default_region)
 
 #
 #
@@ -317,7 +374,7 @@ def unitTestItems():
     print(getItem("foobar2"))    
 
 def unitTestItemsInBucket():
-    bkt_name = "aspiring-pdf-files"
+    bkt_name = os.getenv("PDF_S3_BUCKET", "aspiring-pdf-files")
     putItem("foobar1","test1", bkt_name)
     print(existsItem("foobar1", bkt_name))
     print(getItem("foobar1", bkt_name))

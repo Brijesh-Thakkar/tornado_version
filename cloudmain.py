@@ -41,6 +41,8 @@ import base64
 
 channels = {}
 
+PDF_BUCKET = os.getenv("PDF_S3_BUCKET", "aspiring-pdf-files")
+
 define("port", default=8080, help="run on the given port", type=int)
 #define("mysql_host", default="127.0.0.1:3306", help="database host")
 #define("mysql_database", default="aspiringinvestments", help="database name")
@@ -1246,9 +1248,9 @@ class IconImgHandler(BaseHandler):
 
 class HtmlToPdfHandler(BaseHandler):
     def exists_in_storage(self,fname):
-        return cloud.storage.storage.existsItem(fname, "aspiring-pdf-files")
+        return cloud.storage.storage.existsItem(fname, PDF_BUCKET)
     def get_from_storage(self,fname):
-        return cloud.storage.storage.getItem(fname, "aspiring-pdf-files")
+        return cloud.storage.storage.getItem(fname, PDF_BUCKET)
     def get_random_string(self,size):
         char_set = string.ascii_uppercase + string.digits
         return ''.join(random.sample(char_set,size))

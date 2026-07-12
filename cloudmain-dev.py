@@ -56,6 +56,10 @@ HTMLTOPDF_BASE = os.environ.get(
     "HTMLTOPDF_BASE",
     "/home/ubuntu/tmp"
 )
+PDF_BUCKET = os.getenv(
+    "PDF_S3_BUCKET",
+    "aspiring-pdf-files"
+)
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -1330,9 +1334,9 @@ class IconImgHandler(BaseHandler):
 
 class HtmlToPdfHandler(BaseHandler):
     def exists_in_storage(self,fname):
-        return cloud.storage.storage.existsItem(fname, "aspiring-pdf-files")
+        return cloud.storage.storage.existsItem(fname, PDF_BUCKET)
     def get_from_storage(self,fname):
-        return cloud.storage.storage.getItem(fname, "aspiring-pdf-files")
+        return cloud.storage.storage.getItem(fname, PDF_BUCKET)
     def get_random_string(self,size):
         char_set = string.ascii_uppercase + string.digits
         return ''.join(random.sample(char_set,size))
@@ -1421,11 +1425,15 @@ class HtmlToPdfHandler(BaseHandler):
         logging.info(inpfile)
         cmdname = "/usr/local/bin/wkhtmltopdf.sh"
         output = subprocess.getoutput("%s %s %s"%(cmdname, inpfile, outfile))
-        # Upload the generated PDF to S3 so any container can serve GET requests.
-        if os.path.exists(outfile):
+        if not os.path.exists(outfile):
+            logging.error("wkhtmltopdf produced no output for %s: %s" % (fname, output))
+        else:
             with open(outfile, "rb") as f:
                 pdf_bytes = f.read()
-            cloud.storage.storage.putItem(fname, pdf_bytes, "aspiring-pdf-files")
+            if cloud.storage.storage.putItem(fname, pdf_bytes, PDF_BUCKET):
+                logging.info("uploaded pdf %s to s3" % fname)
+            else:
+                logging.error("s3 upload failed for %s; pdf only available on this instance" % fname)
         if action:
             pdfurl="http://"+self.request.host+"/htmltopdf?fname=%s&action=%s"%(fname,action)
         else:

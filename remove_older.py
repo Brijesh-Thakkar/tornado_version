@@ -6,7 +6,7 @@ import cloud.storage.storage
 import shutil
 
 html_bucket = "aspiring-html-files"
-pdf_bucket = "aspiring-pdf-files"
+pdf_bucket = os.getenv("PDF_S3_BUCKET", "aspiring-pdf-files")
 pdf_path = "/home/ubuntu/tmp/htmltopdf"
 html_path = "/home/ubuntu/tmp/htmlonly"
 older_pdf_path = "/home/ubuntu/tmp/olderpdf"
