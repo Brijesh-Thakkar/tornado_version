@@ -52,6 +52,10 @@ define("port", default=8080, help="run on the given port", type=int)
 #define("mysql_user", default="ai", help="database user")
 #define("mysql_password", default="ai", help="database password")
   
+HTMLTOPDF_BASE = os.environ.get(
+    "HTMLTOPDF_BASE",
+    "/home/ubuntu/tmp"
+)
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -1337,24 +1341,26 @@ class HtmlToPdfHandler(BaseHandler):
         fname = self.get_argument('fname')
         action = self.get_argument('action', default=None)
         if action and action == "preview":
-            fullfname = "/home/ubuntu/tmp/preview/%s"%fname
+            fullfname = os.path.join(HTMLTOPDF_BASE,"preview",fname)%fname
             inpfile = fullfname+".pdf"
             logging.info("fname=%s"%inpfile)        
             self.set_header("Content-Type","application/pdf")
             if os.path.exists(inpfile):
                 logging.info("found %s on disk"%fname)
-                self.write(open(inpfile).read())
+                with open(inpfile, "rb") as f: 
+                    self.write(f.read())
             else:
                 self.write("Not Found")                
             return
 
-        fullfname = "/home/ubuntu/tmp/htmltopdf/%s"%fname
+        fullfname = os.path.join(HTMLTOPDF_BASE,"htmltopdf",fname)
         inpfile = fullfname+".pdf"
         logging.info("fname=%s"%inpfile)        
         self.set_header("Content-Type","application/pdf")
         if os.path.exists(inpfile):
             logging.info("found %s on disk"%fname)
-            self.write(open(inpfile).read())
+            with open(inpfile, "rb") as f:
+                self.write(f.read())
         else:
             data = self.get_from_storage(fname)
             if data:
@@ -1373,7 +1379,7 @@ class HtmlToPdfHandler(BaseHandler):
         if action and action == "preview":
             while True:
                 fname=self.get_random_string(20)
-                fullfname = "/home/ubuntu/tmp/preview/%s"%fname
+                fullfname = os.path.join(HTMLTOPDF_BASE,"preview",fname)%fname
                 if os.path.exists(fullfname):
                     continue
                 else:
@@ -1381,7 +1387,7 @@ class HtmlToPdfHandler(BaseHandler):
         else:
             while True:
                 fname=self.get_random_string(20)
-                fullfname = "/home/ubuntu/tmp/htmltopdf/%s"%fname
+                fullfname = os.path.join(HTMLTOPDF_BASE,"htmltopdf",fname)
                 if os.path.exists(fullfname):
                     continue
                 elif self.exists_in_storage(fname):
@@ -1402,6 +1408,7 @@ class HtmlToPdfHandler(BaseHandler):
             f.write(jsonstr)
             f.close()            
 
+        os.makedirs(os.path.dirname(fullfname),exist_ok=True)
         inpfile = fullfname+".html"
         s = self.get_argument('content')
 
@@ -1414,6 +1421,11 @@ class HtmlToPdfHandler(BaseHandler):
         logging.info(inpfile)
         cmdname = "/usr/local/bin/wkhtmltopdf.sh"
         output = subprocess.getoutput("%s %s %s"%(cmdname, inpfile, outfile))
+        # Upload the generated PDF to S3 so any container can serve GET requests.
+        if os.path.exists(outfile):
+            with open(outfile, "rb") as f:
+                pdf_bytes = f.read()
+            cloud.storage.storage.putItem(fname, pdf_bytes, "aspiring-pdf-files")
         if action:
             pdfurl="http://"+self.request.host+"/htmltopdf?fname=%s&action=%s"%(fname,action)
         else:
