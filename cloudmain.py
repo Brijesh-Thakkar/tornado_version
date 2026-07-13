@@ -42,6 +42,10 @@ import base64
 channels = {}
 
 PDF_BUCKET = os.getenv("PDF_S3_BUCKET", "aspiring-pdf-files")
+# Public base URL used to build pdfurl in responses.
+# Trailing slashes are stripped so the path join is always clean.
+# Falls back to reconstructing the URL from the incoming request when unset.
+PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "").rstrip("/")
 
 define("port", default=8080, help="run on the given port", type=int)
 #define("mysql_host", default="127.0.0.1:3306", help="database host")
@@ -1297,7 +1301,8 @@ class HtmlToPdfHandler(BaseHandler):
         logging.info(inpfile)
         cmdname = "/usr/local/bin/wkhtmltopdf.sh"
         output = subprocess.getoutput("%s %s %s"%(cmdname, inpfile, outfile))
-        pdfurl="http://"+self.request.host+"/htmltopdf?fname=%s"%fname
+        base = PUBLIC_BASE_URL if PUBLIC_BASE_URL else "http://" + self.request.host
+        pdfurl = "%s/htmltopdf?fname=%s" % (base, fname)
         self.finish(dict(pdfurl=pdfurl,result="ok"))
 
 

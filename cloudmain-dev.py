@@ -60,6 +60,10 @@ PDF_BUCKET = os.getenv(
     "PDF_S3_BUCKET",
     "aspiring-pdf-files"
 )
+# Public base URL used to build pdfurl in responses.
+# Trailing slashes are stripped so the path join is always clean.
+# Falls back to reconstructing the URL from the incoming request when unset.
+PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "").rstrip("/")
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -1434,10 +1438,11 @@ class HtmlToPdfHandler(BaseHandler):
                 logging.info("uploaded pdf %s to s3" % fname)
             else:
                 logging.error("s3 upload failed for %s; pdf only available on this instance" % fname)
+        base = PUBLIC_BASE_URL if PUBLIC_BASE_URL else "http://" + self.request.host
         if action:
-            pdfurl="http://"+self.request.host+"/htmltopdf?fname=%s&action=%s"%(fname,action)
+            pdfurl = "%s/htmltopdf?fname=%s&action=%s" % (base, fname, action)
         else:
-            pdfurl="http://"+self.request.host+"/htmltopdf?fname=%s"%fname
+            pdfurl = "%s/htmltopdf?fname=%s" % (base, fname)
         self.finish(dict(pdfurl=pdfurl,result="ok"))
 
 
