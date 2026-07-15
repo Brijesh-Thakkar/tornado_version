@@ -630,9 +630,12 @@ class WebAppHandler(BaseHandler):
             user = self.get_user_id()
             password = self.get_argument('password')
             app = self.get_argument('appname')
-            logging.info("user is "+user)
-            logging.info("appname is "+app)
-            if cloud.authenticate.user.authenticate_user(user,password):
+            logging.info("[login] user=%s appname=%s pw_len=%d", user, app, len(password))
+            print("[login] user=%s appname=%s pw_len=%d" % (user, app, len(password)))
+            auth_ok = cloud.authenticate.user.authenticate_user(user, password)
+            logging.info("[login] authenticate_user returned: %s", auth_ok)
+            print("[login] authenticate_user returned: %s" % auth_ok)
+            if auth_ok:
                 print("authenticate succeeded")
                 self.set_current_user(user)
                 #self.finish(dict(result="ok"))
@@ -685,15 +688,17 @@ class WebAppHandler(BaseHandler):
                       cloud.storage.storage.updateFile(path,app)
                       self.finish(dict(result="ok"))
             else:
-                print("authenticate failed")
-                self.finish(dict(result="fail"))
+                print("[login] authenticate failed for user=%s" % user)
+                logging.warning("[login] authenticate failed for user=%s", user)
+                self.finish(dict(result="fail", data="authfail"))
         if action == "logout":
             self.clear_cookie("user")
             self.finish(dict(result="ok"))
         if action == "register":
             user = self.get_user_id()
             password = self.get_argument('password')
-            logging.info("username is "+user)
+            logging.info("[register] user=%s pw_len=%d", user, len(password))
+            print("[register] user=%s pw_len=%d" % (user, len(password)))
             if cloud.authenticate.user.user_exists(user):
                 # user already exists
                 argument = {}
@@ -701,11 +706,19 @@ class WebAppHandler(BaseHandler):
                 argument['reguser'] = user
                 self.finish(dict(result="exist"))
                 return
-            cloud.authenticate.user.create_user(user,password)
+            cloud.authenticate.user.create_user(user, password)
+            # Verify the write actually landed before proceeding
+            if not cloud.authenticate.user.user_exists(user):
+                logging.error("[register] create_user completed but user STILL NOT FOUND in S3: %s", user)
+                print("[register] ERROR: user not found after create_user for %s" % user)
+                self.finish(dict(result="fail", data="registration_storage_error"))
+                return
+            logging.info("[register] user created and verified in S3: %s", user)
+            print("[register] user created and verified: %s" % user)
             self.set_current_user(user)
             argument = {}
             argument['user'] = user
-            #path = ["home",user,"securestore"]            
+            #path = ["home",user,"securestore"]
             #dirobj = cloud.storage.storage.getFile(path)
             #if (not dirobj) or (len(dirobj.files) == 0):
                 #logging.info("no directory")

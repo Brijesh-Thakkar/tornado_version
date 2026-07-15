@@ -22,15 +22,18 @@ class User:
         data["email"] = user
         # salt and save the salted pw
         data["confirmed"] = True
-        data["pwhash"] = sha256_crypt.encrypt(password)
+        data["pwhash"] = sha256_crypt.hash(password)  # .encrypt() deprecated since passlib 1.7
         data["lastlogin"] = ""
         data["createdon"] = ""
         data["dongle"] = ""
-        self.data = data        
+        self.data = data
     def authenticate(self, password):
-        return sha256_crypt.verify(password, self.data["pwhash"])        
+        result = sha256_crypt.verify(password, self.data["pwhash"])
+        logging.info("authenticate: hash_prefix=%s pw_len=%d match=%s",
+                     self.data["pwhash"][:20], len(password), result)
+        return result        
     def set_password(self, newpassword):
-        self.data["pwhash"] = sha256_crypt.encrypt(newpassword)
+        self.data["pwhash"] = sha256_crypt.hash(newpassword)
     def set_confirmed(self):
         self.data["confirmed"] = True
     def get_confirmed(self):
@@ -76,20 +79,28 @@ def set_user(userobj):
 def create_user(email, password):
     #create the user if it does not exist
     if user_exists(email):
+        logging.warning("create_user: user already exists: %s", email)
         return
+    logging.info("create_user: starting for email=%s", email)
     # ensure ["home"] root dir exists before creating ["home","users"]
     if not storage.getFile(["home"]):
+        logging.info("create_user: creating /home dir")
         if not storage.createDir(["home"]):
             logging.error("create_user: failed to create /home dir")
             return
     if not storage.getFile(userdirpath):
+        logging.info("create_user: creating %s dir", str(userdirpath))
         if not storage.createDir(userdirpath):
             logging.error("create_user: failed to create %s dir" % str(userdirpath))
             return
     path = get_user_path(email)
+    logging.info("create_user: writing user record to S3 path=%s", str(path))
     user = User(user=email, password=password)
-    if not storage.createFile(path, user.get_data()):
-        logging.error("create_user: failed to create file for user %s" % email)    
+    ok = storage.createFile(path, user.get_data())
+    if not ok:
+        logging.error("create_user: FAILED to write user file for %s — S3 write returned False", email)
+    else:
+        logging.info("create_user: user record written successfully for %s", email)    
     
 def delete_user(email):
     # delete the user
@@ -99,11 +110,15 @@ def delete_user(email):
     storage.deleteFile(path)    
 
 def authenticate_user(email, password):
+    logging.info("authenticate_user: looking up email=%s", email)
     user = get_user(email)
     if user == None:
+        logging.warning("authenticate_user: user NOT FOUND for email=%s", email)
         return False
+    logging.info("authenticate_user: user found, confirmed=%s", user.get_confirmed())
     if (user.get_confirmed()):
         return user.authenticate(password)
+    logging.warning("authenticate_user: user not confirmed for email=%s", email)
     return False
 
 def confirm_user(user):
