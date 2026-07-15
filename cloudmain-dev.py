@@ -630,22 +630,13 @@ class WebAppHandler(BaseHandler):
             user = self.get_user_id()
             password = self.get_argument('password')
             app = self.get_argument('appname')
-            logging.info("[login] user=%s appname=%s pw_len=%d", user, app, len(password))
-            print("[login] user=%s appname=%s pw_len=%d" % (user, app, len(password)))
-            auth_ok = cloud.authenticate.user.authenticate_user(user, password)
-            logging.info("[login] authenticate_user returned: %s", auth_ok)
-            print("[login] authenticate_user returned: %s" % auth_ok)
-            if auth_ok:
-                print("authenticate succeeded")
+            if cloud.authenticate.user.authenticate_user(user, password):
                 self.set_current_user(user)
-                #self.finish(dict(result="ok"))
-                username = self.get_current_user()
                 device = self.get_argument('deviceId')
                 path1 = ["home",user,"securestore","device"]
                 dirpath = ["home",user,"securestore"]
                 dirobj1 = cloud.storage.storage.getFile(dirpath)
                 if (not dirobj1) or (len(dirobj1.files) == 0):
-                   logging.info("no directory ")
                    cloud.storage.storage.createDir(dirpath)
                 fileobj1 = cloud.storage.storage.getFile(path1)
                 if fileobj1 == None:
@@ -653,32 +644,26 @@ class WebAppHandler(BaseHandler):
                 else:
                     filedata = fileobj1.data
                     filesdata = filedata.split(',')
-                    logging.info(filesdata)
                     ctr = 0
                     for i in range(0,len(filesdata)):
                         fnme = filesdata[i]
                         if device == fnme:
-                           #self.finish(dict(result="ok"))
                            ctr+=1
                     if ctr==0:
                         device += ","+fileobj1.data
                         cloud.storage.storage.updateFile(path1,device)
                 path = ["home",user,"securestore","ios"]
-                #dirpath = ["home",user,"securestore"]
                 dirobj = cloud.storage.storage.getFile(dirpath)
                 if (not dirobj) or (len(dirobj.files) == 0):
-                   logging.info("no directory ")
                    cloud.storage.storage.createDir(dirpath)
-                #dir created here
                 if app != None:
                    fileobj = cloud.storage.storage.getFile(path)
                    if fileobj == None:
                       cloud.storage.storage.createFile(path,app)
-                      self.finish(dict(result="ok"))   
+                      self.finish(dict(result="ok"))
                    else:
                       filedata = fileobj.data
                       filesdata = filedata.split(',')
-                      logging.info(filesdata)
                       for i in range(0,len(filesdata)):
                         fnme = filesdata[i]
                         if app == fnme:
@@ -688,8 +673,6 @@ class WebAppHandler(BaseHandler):
                       cloud.storage.storage.updateFile(path,app)
                       self.finish(dict(result="ok"))
             else:
-                print("[login] authenticate failed for user=%s" % user)
-                logging.warning("[login] authenticate failed for user=%s", user)
                 self.finish(dict(result="fail", data="authfail"))
         if action == "logout":
             self.clear_cookie("user")
@@ -697,40 +680,22 @@ class WebAppHandler(BaseHandler):
         if action == "register":
             user = self.get_user_id()
             password = self.get_argument('password')
-            logging.info("[register] user=%s pw_len=%d", user, len(password))
-            print("[register] user=%s pw_len=%d" % (user, len(password)))
             if cloud.authenticate.user.user_exists(user):
-                # user already exists
-                argument = {}
-                argument['user'] = None
-                argument['reguser'] = user
                 self.finish(dict(result="exist"))
                 return
             cloud.authenticate.user.create_user(user, password)
-            # Verify the write actually landed before proceeding
+            # Verify the S3 write landed before proceeding
             if not cloud.authenticate.user.user_exists(user):
-                logging.error("[register] create_user completed but user STILL NOT FOUND in S3: %s", user)
-                print("[register] ERROR: user not found after create_user for %s" % user)
+                logging.error("register: user not found in S3 after create_user for %s", user)
                 self.finish(dict(result="fail", data="registration_storage_error"))
                 return
-            logging.info("[register] user created and verified in S3: %s", user)
-            print("[register] user created and verified: %s" % user)
             self.set_current_user(user)
-            argument = {}
-            argument['user'] = user
-            #path = ["home",user,"securestore"]
-            #dirobj = cloud.storage.storage.getFile(path)
-            #if (not dirobj) or (len(dirobj.files) == 0):
-                #logging.info("no directory")
-                #cloud.storage.storage.createDir(path)
             app = self.get_argument("appname")
             path = ["home",user,"securestore","ios"]
             dirpath = ["home",user,"securestore"]
             dirobj = cloud.storage.storage.getFile(dirpath)
             if (not dirobj) or (len(dirobj.files) == 0):
-               logging.info("no directory ")
                cloud.storage.storage.createDir(dirpath)
-            #dir created here
             if app != None:
                fileobj = cloud.storage.storage.getFile(path)
                if fileobj == None:
@@ -739,7 +704,6 @@ class WebAppHandler(BaseHandler):
                else:
                   filedata = fileobj.data
                   filesdata = filedata.split(',')
-                  logging.info(filesdata)
                   for i in range(0,len(filesdata)):
                     fnme = filesdata[i]
                     if app == fnme:
