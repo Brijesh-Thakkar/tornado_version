@@ -14,7 +14,7 @@ def main():
     tornado.options.parse_command_line()
     http_server = tornado.httpserver.HTTPServer(controllers.main.Application())
     http_server.listen(controllers.main.options.port)
-    tornado.ioloop.IOLoop.instance().start()
+    tornado.ioloop.IOLoop.current().start()
 
 if __name__ == "__main__":
     main()
