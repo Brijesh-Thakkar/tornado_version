@@ -60,6 +60,7 @@ PDF_BUCKET = os.getenv(
     "PDF_S3_BUCKET",
     "aspiring-pdf-files"
 )
+IMG_BUCKET = os.getenv("IMG_S3_BUCKET", "aspiring-img-files")
 # Public base URL used to build pdfurl in responses.
 # Trailing slashes are stripped so the path join is always clean.
 # Falls back to reconstructing the URL from the incoming request when unset.
@@ -1240,9 +1241,9 @@ class IconImgHandler(BaseHandler):
         char_set = string.ascii_uppercase + string.digits
         return ''.join(random.sample(char_set,size))
     def exists_in_storage(self,fname):
-        return cloud.storage.storage.existsItem(fname, "aspiring-img-files")
+        return cloud.storage.storage.existsItem(fname, IMG_BUCKET)
     def get_from_storage(self,fname):
-        return cloud.storage.storage.getItem(fname, "aspiring-img-files")
+        return cloud.storage.storage.getItem(fname, IMG_BUCKET)
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
@@ -1269,7 +1270,8 @@ class IconImgHandler(BaseHandler):
             #self.write(open(inpfile).read())
             if os.path.exists(inpfile):
                 logging.info("found %s on disk"%fname)
-                self.write(open(inpfile).read())
+                with open(inpfile, "rb") as f:
+                    self.write(f.read())
             else:
                 data = self.get_from_storage(fname)
                 if data:
@@ -1293,7 +1295,8 @@ class IconImgHandler(BaseHandler):
                 continue
             else:
                 break;
-    
+
+        os.makedirs(os.path.dirname(fullfname), exist_ok=True)
         s = self.get_argument('content')
         suffix = self.get_argument('suffix')
         inpfile = fullfname+"."+suffix
@@ -1303,7 +1306,7 @@ class IconImgHandler(BaseHandler):
         with open(inpfile, "wb") as f:
             f.write(img_bytes)
         fname = fname+"."+suffix
-        if cloud.storage.storage.putItem(fname, img_bytes, "aspiring-img-files"):
+        if cloud.storage.storage.putItem(fname, img_bytes, IMG_BUCKET):
             logging.info("uploaded image %s to s3" % fname)
         else:
             logging.error("s3 upload failed for image %s; file only available on this instance" % fname)
