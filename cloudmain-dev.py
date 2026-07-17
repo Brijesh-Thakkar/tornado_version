@@ -1243,6 +1243,13 @@ class IconImgHandler(BaseHandler):
         return cloud.storage.storage.existsItem(fname, "aspiring-img-files")
     def get_from_storage(self,fname):
         return cloud.storage.storage.getItem(fname, "aspiring-img-files")
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.set_header("Access-Control-Allow-Headers", "Content-Type")
+    def options(self):
+        self.set_status(204)
+        self.finish()
     def get(self):
         logging.info("in iconimg get")
         fname = self.get_argument('fname')
@@ -1288,29 +1295,20 @@ class IconImgHandler(BaseHandler):
                 break;
     
         s = self.get_argument('content')
-        inpfile = fullfname+"."+self.get_argument('suffix')
-        typ ,dat = s.split(',');
-        # logging.info(typ)
+        suffix = self.get_argument('suffix')
+        inpfile = fullfname+"."+suffix
+        typ, dat = s.split(',')
         logging.info(len(dat))
-        # logging.info(len(str))
-        str = base64.b64decode(dat)
-        """s += "==="
-        lens = len(s)
-        logging.info(lens)
-        s = base64.b64decode(s)
-        logging.info(lens % 4)
-        lens = len(s)
-        logging.info(lens)
-        lenx = lens - (lens % 4 if lens % 4 else 4)
-        logging.info(lenx)
-        s = base64.b64decode(s[:lenx])
-        s.decode('base64')
-        s = base64.decodestring(s)"""
-        f = open(inpfile,"w")
-        f.write(str)
-        f.close()
-        fname = fname+"."+self.get_argument('suffix')
-        imgurl="http://"+self.request.host+"/iconimg?fname=%s"%fname
+        img_bytes = base64.b64decode(dat)
+        with open(inpfile, "wb") as f:
+            f.write(img_bytes)
+        fname = fname+"."+suffix
+        if cloud.storage.storage.putItem(fname, img_bytes, "aspiring-img-files"):
+            logging.info("uploaded image %s to s3" % fname)
+        else:
+            logging.error("s3 upload failed for image %s; file only available on this instance" % fname)
+        base = PUBLIC_BASE_URL if PUBLIC_BASE_URL else "http://" + self.request.host
+        imgurl = "%s/iconimg?fname=%s" % (base, fname)
         self.finish(dict(imgurl=imgurl,result="ok"))
 
 class HtmlToPdfHandler(BaseHandler):
