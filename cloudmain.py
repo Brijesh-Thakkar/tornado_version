@@ -72,6 +72,7 @@ class Application(tornado.web.Application):
             (r"/register",UserRegisterHandler),
             (r"/lostpw",UserLostPasswordHandler),
             (r"/webapp",WebAppHandler),
+            (r"/meshkit", MeshkitHandler),
             (r"/pwreset",PwResetHandler),
             (r"/dropbox", DropBoxHandler),
             (r"/inapp", InAppHandler),
@@ -1169,6 +1170,80 @@ class DownloadFileHandler(BaseHandler):
         self.set_header("Content-Disposition", 'attachment;filename='+"tmp."+suffix[type])
         self.set_header("Cache-Control", 'max-age=0') 
         self.write(content)
+
+
+MESHKIT_BASE = "http://meshkit-service:4000"
+
+class MeshkitHandler(BaseHandler):
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
+        self.set_header("Access-Control-Allow-Headers", "Content-Type")
+
+    def options(self):
+        self.set_status(204)
+        self.finish()
+
+    @tornado.gen.coroutine
+    def get(self):
+        action = self.get_argument("action", "")
+        http = tornado.httpclient.AsyncHTTPClient()
+        try:
+            if action == "getjson":
+                cid = self.get_argument("cid")
+                resp = yield http.fetch("%s/getJSON/%s" % (MESHKIT_BASE, cid))
+                self.set_header("Content-Type", "application/json")
+                self.write(resp.body)
+            elif action == "getfile":
+                cid = self.get_argument("cid")
+                resp = yield http.fetch("%s/getFile/%s" % (MESHKIT_BASE, cid))
+                self.set_header("Content-Type", resp.headers.get("Content-Type", "application/octet-stream"))
+                self.write(resp.body)
+            elif action == "delete":
+                cid = self.get_argument("cid")
+                req = tornado.httpclient.HTTPRequest(
+                    "%s/delete/%s" % (MESHKIT_BASE, cid), method="DELETE"
+                )
+                resp = yield http.fetch(req)
+                self.set_header("Content-Type", "application/json")
+                self.write(resp.body)
+            else:
+                self.set_status(400)
+                self.write({"error": "unknown action"})
+        except tornado.httpclient.HTTPClientError as e:
+            self.set_status(500)
+            self.write({"error": str(e)})
+
+    @tornado.gen.coroutine
+    def post(self):
+        action = self.get_argument("action", "")
+        http = tornado.httpclient.AsyncHTTPClient()
+        try:
+            if action == "putjson":
+                body = self.request.body
+                req = tornado.httpclient.HTTPRequest(
+                    "%s/putJSON" % MESHKIT_BASE, method="POST",
+                    headers={"Content-Type": "application/json"}, body=body
+                )
+                resp = yield http.fetch(req)
+                self.set_header("Content-Type", "application/json")
+                self.write(resp.body)
+            elif action == "putfile":
+                body = self.request.body
+                content_type = self.request.headers.get("Content-Type", "application/octet-stream")
+                req = tornado.httpclient.HTTPRequest(
+                    "%s/putFile" % MESHKIT_BASE, method="POST",
+                    headers={"Content-Type": content_type}, body=body
+                )
+                resp = yield http.fetch(req)
+                self.set_header("Content-Type", "application/json")
+                self.write(resp.body)
+            else:
+                self.set_status(400)
+                self.write({"error": "unknown action"})
+        except tornado.httpclient.HTTPClientError as e:
+            self.set_status(500)
+            self.write({"error": str(e)})
 
 
 class IconImgHandler(BaseHandler):
