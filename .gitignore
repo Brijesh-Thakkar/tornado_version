@@ -49,3 +49,4 @@ playwright-report/
 test-results/
 playwright/.cache/
 
+meshkit-service/.env
