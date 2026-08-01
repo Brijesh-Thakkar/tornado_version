@@ -26,6 +26,7 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             #(r"/(.*)", WebHomeHandler),
+            (r"/", tornado.web.RedirectHandler, {"url": "/web/home/index.html"}),
             (r"/web/home/(.*)", WebHomeHandler)
         ]
         settings = dict(
