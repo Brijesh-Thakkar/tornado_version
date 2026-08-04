@@ -32,76 +32,81 @@
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" role="navigation">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
-                <a class="navbar-brand" href="index.html">Start Bootstrap</a>
-                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="navbar-toggler-icon"></span>
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-bs-toggle="collapse" data-bs-target="#bs-example-navbar-collapse-1">
+                    <span class="visually-hidden">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
+                <a class="navbar-brand" href="/web/home/index.html">Start Bootstrap</a>
+            </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="about.html">About</a>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/web/home/about.html">About</a>
                     </li>
-                    <li class="nav-item active">
-                        <a class="nav-link active" href="services.html">Services</a>
+                    <li class="active">
+                        <a href="/web/home/services.html">Services</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Contact</a>
+                    <li>
+                        <a href="/web/home/contact.html">Contact</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Portfolio </a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Portfolio <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="dropdown-item" href="portfolio-1-col.html">1 Column Portfolio</a>
+                                <a href="/web/home/portfolio-1-col.html">1 Column Portfolio</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="portfolio-2-col.html">2 Column Portfolio</a>
+                                <a href="/web/home/portfolio-2-col.html">2 Column Portfolio</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="portfolio-3-col.html">3 Column Portfolio</a>
+                                <a href="/web/home/portfolio-3-col.html">3 Column Portfolio</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="portfolio-4-col.html">4 Column Portfolio</a>
+                                <a href="/web/home/portfolio-4-col.html">4 Column Portfolio</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="portfolio-item.html">Single Portfolio Item</a>
+                                <a href="/web/home/portfolio-item.html">Single Portfolio Item</a>
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Blog </a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Blog <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="dropdown-item" href="blog-home-1.html">Blog Home 1</a>
+                                <a href="/web/home/blog-home-1.html">Blog Home 1</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="blog-home-2.html">Blog Home 2</a>
+                                <a href="/web/home/blog-home-2.html">Blog Home 2</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="blog-post.html">Blog Post</a>
+                                <a href="/web/home/blog-post.html">Blog Post</a>
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Other Pages </a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Other Pages <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="dropdown-item" href="full-width.html">Full Width Page</a>
+                                <a href="/web/home/full-width.html">Full Width Page</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="sidebar.html">Sidebar Page</a>
+                                <a href="/web/home/sidebar.html">Sidebar Page</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="faq.html">FAQ</a>
+                                <a href="/web/home/faq.html">FAQ</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="404.html">404</a>
+                                <a href="/web/home/404.html">404</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="pricing.html">Pricing Table</a>
+                                <a href="/web/home/pricing.html">Pricing Table</a>
                             </li>
                         </ul>
                     </li>
@@ -122,9 +127,9 @@
                     <small>Subheading</small>
                 </h1>
                 <ol class="breadcrumb">
-                    <li><a href="index.html">Home</a>
+                    <li class="breadcrumb-item"><a href="/web/home/index.html">Home</a>
                     </li>
-                    <li class="active">Services</li>
+                    <li class="breadcrumb-item active">Services</li>
                 </ol>
             </div>
         </div>
@@ -133,7 +138,7 @@
         <!-- Image Header -->
         <div class="row">
             <div class="col-lg-12">
-                <img class="img-responsive" src="http://placehold.it/1200x300" alt="">
+                <img class="img-fluid" src="http://placehold.it/1200x300" alt="">
             </div>
         </div>
         <!-- /.row -->
@@ -214,18 +219,18 @@
             <div class="col-lg-12">
 
                 <ul id="myTab" class="nav nav-tabs nav-justified">
-                    <li class="nav-item"><a class="nav-link active" href="#service-one" data-bs-toggle="tab"><i class="fa fa-tree"></i> Service One</a>
+                    <li class="active"><a href="#service-one" data-bs-toggle="tab"><i class="fa fa-tree"></i> Service One</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#service-two" data-bs-toggle="tab"><i class="fa fa-car"></i> Service Two</a>
+                    <li class=""><a href="#service-two" data-bs-toggle="tab"><i class="fa fa-car"></i> Service Two</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#service-three" data-bs-toggle="tab"><i class="fa fa-support"></i> Service Three</a>
+                    <li class=""><a href="#service-three" data-bs-toggle="tab"><i class="fa fa-support"></i> Service Three</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#service-four" data-bs-toggle="tab"><i class="fa fa-database"></i> Service Four</a>
+                    <li class=""><a href="#service-four" data-bs-toggle="tab"><i class="fa fa-database"></i> Service Four</a>
                     </li>
                 </ul>
 
                 <div id="myTabContent" class="tab-content">
-                    <div class="tab-pane fade show active" id="service-one">
+                    <div class="tab-pane fade active in" id="service-one">
                         <h4>Service One</h4>
                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae repudiandae fugiat illo cupiditate excepturi esse officiis consectetur, laudantium qui voluptatem. Ad necessitatibus velit, accusantium expedita debitis impedit rerum totam id. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus quibusdam recusandae illum, nesciunt, architecto, saepe facere, voluptas eum incidunt dolores magni itaque autem neque velit in. At quia quaerat asperiores.</p>
                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae repudiandae fugiat illo cupiditate excepturi esse officiis consectetur, laudantium qui voluptatem. Ad necessitatibus velit, accusantium expedita debitis impedit rerum totam id. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus quibusdam recusandae illum, nesciunt, architecto, saepe facere, voluptas eum incidunt dolores magni itaque autem neque velit in. At quia quaerat asperiores.</p>
@@ -258,7 +263,7 @@
             </div>
             <div class="col-md-4">
                 <div class="media">
-                    <div class="pull-left">
+                    <div class="float-start">
                         <span class="fa-stack fa-2x">
                               <i class="fa fa-circle fa-stack-2x text-primary"></i>
                               <i class="fa fa-tree fa-stack-1x fa-inverse"></i>
@@ -270,7 +275,7 @@
                     </div>
                 </div>
                 <div class="media">
-                    <div class="pull-left">
+                    <div class="float-start">
                         <span class="fa-stack fa-2x">
                               <i class="fa fa-circle fa-stack-2x text-primary"></i>
                               <i class="fa fa-car fa-stack-1x fa-inverse"></i>
@@ -282,7 +287,7 @@
                     </div>
                 </div>
                 <div class="media">
-                    <div class="pull-left">
+                    <div class="float-start">
                         <span class="fa-stack fa-2x">
                               <i class="fa fa-circle fa-stack-2x text-primary"></i>
                               <i class="fa fa-support fa-stack-1x fa-inverse"></i>
@@ -296,7 +301,7 @@
             </div>
             <div class="col-md-4">
                 <div class="media">
-                    <div class="pull-left">
+                    <div class="float-start">
                         <span class="fa-stack fa-2x">
                               <i class="fa fa-circle fa-stack-2x text-primary"></i>
                               <i class="fa fa-database fa-stack-1x fa-inverse"></i>
@@ -308,7 +313,7 @@
                     </div>
                 </div>
                 <div class="media">
-                    <div class="pull-left">
+                    <div class="float-start">
                         <span class="fa-stack fa-2x">
                               <i class="fa fa-circle fa-stack-2x text-primary"></i>
                               <i class="fa fa-bomb fa-stack-1x fa-inverse"></i>
@@ -320,7 +325,7 @@
                     </div>
                 </div>
                 <div class="media">
-                    <div class="pull-left">
+                    <div class="float-start">
                         <span class="fa-stack fa-2x">
                               <i class="fa fa-circle fa-stack-2x text-primary"></i>
                               <i class="fa fa-bank fa-stack-1x fa-inverse"></i>
@@ -334,7 +339,7 @@
             </div>
             <div class="col-md-4">
                 <div class="media">
-                    <div class="pull-left">
+                    <div class="float-start">
                         <span class="fa-stack fa-2x">
                               <i class="fa fa-circle fa-stack-2x text-primary"></i>
                               <i class="fa fa-paper-plane fa-stack-1x fa-inverse"></i>
@@ -346,7 +351,7 @@
                     </div>
                 </div>
                 <div class="media">
-                    <div class="pull-left">
+                    <div class="float-start">
                         <span class="fa-stack fa-2x">
                               <i class="fa fa-circle fa-stack-2x text-primary"></i>
                               <i class="fa fa-space-shuttle fa-stack-1x fa-inverse"></i>
@@ -358,7 +363,7 @@
                     </div>
                 </div>
                 <div class="media">
-                    <div class="pull-left">
+                    <div class="float-start">
                         <span class="fa-stack fa-2x">
                               <i class="fa fa-circle fa-stack-2x text-primary"></i>
                               <i class="fa fa-recycle fa-stack-1x fa-inverse"></i>
