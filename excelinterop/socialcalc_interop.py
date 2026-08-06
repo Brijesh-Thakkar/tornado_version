@@ -193,7 +193,10 @@ def _write_cells_to_xls_sheet(ws, cells):
 
 def export_xlsx(json_data):
     """Export SocialCalc JSON to .xlsx bytes."""
+    import logging as _log
+    _log.info("[DEBUG-INTEROP export_xlsx] input type=%s len=%d first_300=%s", type(json_data).__name__, len(json_data) if json_data else 0, repr(json_data[:300]) if json_data else 'None')
     book = json.loads(json_data) if isinstance(json_data, str) else json_data
+    _log.info("[DEBUG-INTEROP export_xlsx] book keys=%s sheetArr keys=%s", list(book.keys()) if isinstance(book, dict) else 'NOT_DICT', list(book.get('sheetArr', {}).keys()) if isinstance(book, dict) else 'N/A')
     wb = openpyxl.Workbook()
     wb.remove(wb.active)
 
@@ -236,8 +239,12 @@ def export_xls(json_data):
 
 def export_csv(json_data):
     """Export SocialCalc JSON to CSV string (first sheet only)."""
+    import logging as _log
+    _log.info("[DEBUG-INTEROP export_csv] input type=%s len=%d first_300=%s", type(json_data).__name__, len(json_data) if json_data else 0, repr(json_data[:300]) if json_data else 'None')
     book = json.loads(json_data) if isinstance(json_data, str) else json_data
+    _log.info("[DEBUG-INTEROP export_csv] book type=%s keys=%s", type(book).__name__, list(book.keys()) if isinstance(book, dict) else repr(book)[:200])
     sheet_arr = book.get('sheetArr', {})
+    _log.info("[DEBUG-INTEROP export_csv] sheet_arr type=%s len=%d", type(sheet_arr).__name__, len(sheet_arr) if sheet_arr else 0)
 
     if not sheet_arr:
         return ''

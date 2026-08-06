@@ -1132,19 +1132,21 @@ class DownloadFileHandler(BaseHandler):
     def post(self):
         logging.info(self.get_argument("type"))
         type = self.get_argument('type')
+        raw_content = self.get_argument('content')
+        logging.info("[DEBUG-EXPORT] type=%s content_len=%d first_500=%s", type, len(raw_content), repr(raw_content[:500]))
         if type == "Excel2007":
-            content = export_xlsx(self.get_argument('content'))
+            content = export_xlsx(raw_content)
         elif type == "Excel5":
-            content = export_xls(self.get_argument('content'))
+            content = export_xls(raw_content)
         elif type == "CSV":
-            content = export_csv(self.get_argument('content')).encode('utf-8')
+            content = export_csv(raw_content).encode('utf-8')
         elif type == "PDF":
             logging.info("type is PDF")
             tmpdir = tempfile.mkdtemp()
             inpfile = os.path.join(tmpdir, "tmp.html")
             outfile = os.path.join(tmpdir, "tmp.pdf")
             with open(inpfile, 'w', encoding='utf-8') as f:
-                f.write(self.get_argument('content'))
+                f.write(raw_content)
             cmdname = "/usr/local/bin/wkhtmltopdf.sh"
             if not os.path.exists(cmdname):
                 cmdname = "wkhtmltopdf"
@@ -1427,6 +1429,7 @@ class ImportHandler(BaseHandler):
         fname = self.request.files['upload'][0]['filename']
         fcontent = self.request.files['upload'][0]['body']
         fname_lower = fname.lower()
+        logging.info("[DEBUG-IMPORT] fname=%s fname_lower=%s len=%d first_200=%s", fname, fname_lower, len(fcontent), repr(fcontent[:200]))
 
         if fname_lower.endswith('.msc') or fname_lower.endswith('.msce'):
             wbook = fcontent.decode('utf-8', errors='replace') if isinstance(fcontent, bytes) else fcontent
