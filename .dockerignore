@@ -11,6 +11,11 @@ __pycache__/
 .eggs/
 dist/
 build/
+venv/
+
+# Large test/sample files not needed in image
+excelinterop/phpexcel/socialcalc/tmp/
+excelinterop/phpexcel/Classes/
 
 # Environment & secrets
 .env
@@ -44,6 +49,15 @@ test-results/
 *.bak
 *.orig
 *~
+
+# Legacy/unused code not needed in image
+tornadoaic/
+tornado_legacy/
+website/
+website_tickervalue/
+demos/
+testcases/
+test-script.py
 
 # Local storage
 local_storage/
