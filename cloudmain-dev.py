@@ -1189,50 +1189,49 @@ suffix = {"Excel2007":"xlsx",
 
 sessionfiledownloads = {}
 import codecs
+import tempfile
+from excelinterop.socialcalc_interop import export_xlsx, export_xls, export_csv
+
 class DownloadFileHandler(BaseHandler):
     def post(self):
         logging.info(self.get_argument("type"))
-        #logging.info(self.get_argument("content"))
         type = self.get_argument('type')
-        #logging.info(self.get_argument('content'))
-        if (type != "MSC") and (type != "MSCE") and (type != "HTML") and (type != "PDF") :
-            fullfname = "./excelinterop/phpexcel/socialcalc/tmp/tmp"
-            inpfile = fullfname+".b"
-        
-            f = codecs.open(inpfile,encoding='utf-8',mode="w+")
-            s = str(self.get_argument('content'))
-            #logging.info(s)
-            f.write(s)
-            f.close()
-            outfile = fullfname+"."+suffix[type]
-            logging.info(outfile)
-            logging.info(inpfile)
-            cmdname = "./excelinterop/phpexcel/socialcalc/export.php"
-            output = subprocess.getoutput("php %s %s %s %s"%(cmdname, inpfile, outfile, type))
-            logging.info(output)
-            content = open(outfile).read()
-        elif (type == "PDF"):
-            # run with wkhtmltopdf
+        raw_content = self.get_argument('content')
+        logging.info("[DEBUG-EXPORT] type=%s content_len=%d first_500=%s", type, len(raw_content), repr(raw_content[:500]))
+        if type == "Excel2007":
+            content = export_xlsx(raw_content)
+        elif type == "Excel5":
+            content = export_xls(raw_content)
+        elif type == "CSV":
+            content = export_csv(raw_content).encode('utf-8')
+        elif type == "PDF":
             logging.info("type is PDF")
-            fullfname = "/home/ubuntu/tmp/tmp"
-            inpfile = fullfname+".html"
-            f = codecs.open(inpfile,encoding='utf-8',mode="w+")
-            s = str(self.get_argument('content'))
-            #logging.info(s)
-            f.write(s)
-            f.close()
-            outfile = fullfname+"."+suffix[type]
-            logging.info(outfile)
-            logging.info(inpfile)
+            tmpdir = tempfile.mkdtemp()
+            inpfile = os.path.join(tmpdir, "tmp.html")
+            outfile = os.path.join(tmpdir, "tmp.pdf")
+            with open(inpfile, 'w', encoding='utf-8') as f:
+                f.write(raw_content)
             cmdname = "/usr/local/bin/wkhtmltopdf.sh"
-            output = subprocess.getoutput("%s %s %s"%(cmdname, inpfile, outfile))
+            if not os.path.exists(cmdname):
+                cmdname = "wkhtmltopdf"
+            output = subprocess.getoutput("%s %s %s" % (cmdname, inpfile, outfile))
             logging.info(output)
-            content = open(outfile).read()
+            if os.path.exists(outfile):
+                with open(outfile, 'rb') as f:
+                    content = f.read()
+            else:
+                self.set_status(500)
+                self.write("PDF generation failed: wkhtmltopdf not available or errored")
+                return
+        elif type in ("HTML", "MSC", "MSCE"):
+            content = raw_content
         else:
-            content = self.get_argument('content')
+            self.set_status(400)
+            self.write("Unknown export type")
+            return
         self.set_header("Content-Type", contenttypes[type])
         self.set_header("Content-Disposition", 'attachment;filename='+"tmp."+suffix[type])
-        self.set_header("Cache-Control", 'max-age=0') 
+        self.set_header("Cache-Control", 'max-age=0')
         self.write(content)
 
 
@@ -1548,40 +1547,38 @@ class ImportHandler(BaseHandler):
 
 
     def post(self):
+        from excelinterop.socialcalc_interop import import_xlsx, import_xls, import_csv
+
         session = self.get_cookie("session")
 
         fname = self.request.files['upload'][0]['filename']
         fcontent = self.request.files['upload'][0]['body']
-        if (fname[-3:] != "msc") and (fname[-4:] != "msce") :
-            fullfname = "./excelinterop/phpexcel/socialcalc/tmp/"+fname
-            f = open(fullfname,"w")
-            f.write(fcontent)
-            f.close()
-            #logging.info("wrote "+fullfname)
-            cmdname = "./excelinterop/phpexcel/socialcalc/import.php"
-            output = subprocess.getoutput("php %s %s"%(cmdname, fullfname))
-            #logging.info("output is "+output)
-            i = output.index("$---$")
-            wbook = output[i+5:]
-            
+        fname_lower = fname.lower()
+        logging.info("[DEBUG-IMPORT] fname=%s fname_lower=%s len=%d first_200=%s", fname, fname_lower, len(fcontent), repr(fcontent[:200]))
+
+        if fname_lower.endswith('.msc') or fname_lower.endswith('.msce'):
+            wbook = fcontent.decode('utf-8', errors='replace') if isinstance(fcontent, bytes) else fcontent
+        elif fname_lower.endswith('.xlsx'):
+            wbook = import_xlsx(fcontent)
+        elif fname_lower.endswith('.xls'):
+            wbook = import_xls(fcontent)
+        elif fname_lower.endswith('.csv'):
+            wbook = import_csv(fcontent)
         else:
-            wbook = fcontent
-    
+            wbook = import_xlsx(fcontent)
+
         sessionfileuploads[fname] = wbook
 
-        self.set_cookie("idinsession",str(1))
-
-        #logging.info(fname)
-        #logging.info(wbook)
+        self.set_cookie("idinsession", str(1))
 
         entry = {}
         entry['fname'] = fname
-        if (fname[-4:] == "msce"):
+        if fname_lower.endswith('msce'):
             entry['sheetmscestr'] = wbook
-            entry['sheetstr'] = ""            
+            entry['sheetstr'] = ""
         else:
             entry['sheetmscestr'] = ""
-            entry['sheetstr'] = wbook                        
+            entry['sheetstr'] = wbook
 
         entry['session'] = session
         self.render("importcollabload.html", entry=entry)        
