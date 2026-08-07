@@ -1197,7 +1197,6 @@ class DownloadFileHandler(BaseHandler):
         logging.info(self.get_argument("type"))
         type = self.get_argument('type')
         raw_content = self.get_argument('content')
-        logging.info("[DEBUG-EXPORT] type=%s content_len=%d first_500=%s", type, len(raw_content), repr(raw_content[:500]))
         if type == "Excel2007":
             content = export_xlsx(raw_content)
         elif type == "Excel5":
@@ -1554,7 +1553,6 @@ class ImportHandler(BaseHandler):
         fname = self.request.files['upload'][0]['filename']
         fcontent = self.request.files['upload'][0]['body']
         fname_lower = fname.lower()
-        logging.info("[DEBUG-IMPORT] fname=%s fname_lower=%s len=%d first_200=%s", fname, fname_lower, len(fcontent), repr(fcontent[:200]))
 
         if fname_lower.endswith('.msc') or fname_lower.endswith('.msce'):
             wbook = fcontent.decode('utf-8', errors='replace') if isinstance(fcontent, bytes) else fcontent
@@ -1574,14 +1572,19 @@ class ImportHandler(BaseHandler):
         entry = {}
         entry['fname'] = fname
         if fname_lower.endswith('msce'):
-            entry['sheetmscestr'] = wbook
+            import urllib.parse
+            if wbook.startswith('%7B') or wbook.startswith('%7b'):
+                entry['sheetmscestr'] = wbook
+            else:
+                entry['sheetmscestr'] = urllib.parse.quote(wbook, safe='')
             entry['sheetstr'] = ""
         else:
             entry['sheetmscestr'] = ""
             entry['sheetstr'] = wbook
 
         entry['session'] = session
-        self.render("importcollabload.html", entry=entry)        
+        self.render("importcollabload.html", entry=entry)
+
 
 
 class TickerJsonHandler(BaseHandler):
