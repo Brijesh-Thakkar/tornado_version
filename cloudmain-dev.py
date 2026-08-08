@@ -1204,16 +1204,21 @@ class DownloadFileHandler(BaseHandler):
         elif type == "CSV":
             content = export_csv(raw_content).encode('utf-8')
         elif type == "PDF":
+            from excelinterop.socialcalc_interop import export_html
             logging.info("type is PDF")
+            html_content = export_html(raw_content)
             tmpdir = tempfile.mkdtemp()
             inpfile = os.path.join(tmpdir, "tmp.html")
             outfile = os.path.join(tmpdir, "tmp.pdf")
             with open(inpfile, 'w', encoding='utf-8') as f:
-                f.write(raw_content)
+                f.write(html_content)
             cmdname = "/usr/local/bin/wkhtmltopdf.sh"
             if not os.path.exists(cmdname):
                 cmdname = "wkhtmltopdf"
-            output = subprocess.getoutput("%s %s %s" % (cmdname, inpfile, outfile))
+            output = subprocess.getoutput(
+                "%s --enable-javascript --javascript-delay 2000 --no-stop-slow-scripts %s %s"
+                % (cmdname, inpfile, outfile)
+            )
             logging.info(output)
             if os.path.exists(outfile):
                 with open(outfile, 'rb') as f:
@@ -1222,7 +1227,10 @@ class DownloadFileHandler(BaseHandler):
                 self.set_status(500)
                 self.write("PDF generation failed: wkhtmltopdf not available or errored")
                 return
-        elif type in ("HTML", "MSC", "MSCE"):
+        elif type == "HTML":
+            from excelinterop.socialcalc_interop import export_html
+            content = export_html(raw_content)
+        elif type in ("MSC", "MSCE"):
             content = raw_content
         else:
             self.set_status(400)

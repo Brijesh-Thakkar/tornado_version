@@ -420,3 +420,98 @@ def _workbook_to_socialcalc_xlrd(wb):
         book['currentid'] = 'sheet0'
 
     return json.dumps(book)
+
+
+def export_html(json_data):
+    """Export SocialCalc JSON to self-contained HTML with chart support."""
+    book = json.loads(json_data) if isinstance(json_data, str) else json_data
+    sheet_arr = book.get('sheetArr', {})
+
+    cell_data_map = {}
+    all_sheets_html = []
+
+    for key, sheet_info in sheet_arr.items():
+        sheet_name = sheet_info.get('name', key)
+        savestr = sheet_info.get('sheetstr', {}).get('savestr', '')
+        cells = _parse_sheet(savestr)
+
+        for coord, cell in cells.items():
+            val = cell.get('datavalue', '')
+            if val != '':
+                cell_data_map[f"{sheet_name}!{coord}"] = val
+
+        max_row = 0
+        max_col = 0
+        for coord in cells:
+            col, row = _coord_to_cr(coord)
+            max_row = max(max_row, row)
+            max_col = max(max_col, col)
+
+        if max_row == 0:
+            continue
+
+        rows_html = []
+        rows_html.append(f'<h3>{_html_escape(sheet_name)}</h3>')
+        rows_html.append('<table border="1" cellpadding="4" cellspacing="0">')
+        for r in range(1, max_row + 1):
+            rows_html.append('<tr>')
+            c = 1
+            while c <= max_col:
+                coord = f'{_col_letter(c)}{r}'
+                cell = cells.get(coord, {})
+                val = cell.get('datavalue', '')
+                colspan = cell.get('colspan', 1)
+                rowspan = cell.get('rowspan', 1)
+
+                if isinstance(val, str) and ('<!--script' in val or '<div' in val.lower()):
+                    display = val
+                elif val != '':
+                    display = _html_escape(str(val))
+                else:
+                    display = '&nbsp;'
+
+                attrs = ''
+                if colspan > 1:
+                    attrs += f' colspan="{colspan}"'
+                if rowspan > 1:
+                    attrs += f' rowspan="{rowspan}"'
+                rows_html.append(f'<td{attrs}>{display}</td>')
+                c += colspan
+            rows_html.append('</tr>')
+        rows_html.append('</table>')
+        all_sheets_html.append('\n'.join(rows_html))
+
+    body_html = '\n<br>\n'.join(all_sheets_html)
+
+    scripts = []
+    for match in re.finditer(r'<!--script(.*?)script-->', body_html, re.DOTALL):
+        scripts.append(match.group(1))
+
+    cell_map_json = json.dumps(cell_data_map)
+    scripts_js = '\n'.join('(function(){' + s + '})();' for s in scripts)
+
+    html = (
+        '<!DOCTYPE html>\n<html><head><meta charset="utf-8">\n'
+        '<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>\n'
+        '<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>\n'
+        '<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.pie.min.js"></script>\n'
+        '</head><body>\n'
+        + body_html + '\n'
+        '<script>\n'
+        'var SocialCalc = {GetCellDataValue: function(ref) {\n'
+        '  var map = ' + cell_map_json + ';\n'
+        '  ref = ref.replace(/\\s+/g,"");\n'
+        '  if (map[ref] !== undefined) return map[ref];\n'
+        '  var parts = ref.split("!");\n'
+        '  if (parts.length > 1 && map[parts[1]] !== undefined) return map[parts[1]];\n'
+        '  return "";\n'
+        '}};\n'
+        + scripts_js + '\n'
+        '</script>\n</body></html>'
+    )
+    return html
+
+
+def _html_escape(s):
+    """Escape HTML special characters."""
+    return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
