@@ -9,6 +9,45 @@ services:
       - "11211"
     restart: unless-stopped
 
+  # ── Local S3-compatible storage (MinIO) — used for local dev and CI ────────
+  # Production deployments: remove this service and set real AWS credentials in .env
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    expose:
+      - "9000"
+      - "9001"
+    networks:
+      - app_network
+    volumes:
+      - minio_data:/data
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+
+  # ── One-shot init: creates required S3 buckets inside MinIO ───────────────
+  createbuckets:
+    image: minio/mc:latest
+    networks:
+      - app_network
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 minioadmin minioadmin &&
+      mc mb --ignore-existing local/mc2-app-storage-useast1 &&
+      mc mb --ignore-existing local/aspiring-pdf-files &&
+      exit 0
+      "
+
   # ── Tornado application instance 1 ───────────────────────────────────────
   app1:
     build: .
@@ -21,7 +60,10 @@ services:
     environment:
       - MEMCACHE_HOST=memcache
     depends_on:
-      - memcache
+      memcache:
+        condition: service_started
+      createbuckets:
+        condition: service_completed_successfully
     restart: unless-stopped
 
   # ── Tornado application instance 2 ───────────────────────────────────────
@@ -36,7 +78,10 @@ services:
     environment:
       - MEMCACHE_HOST=memcache
     depends_on:
-      - memcache
+      memcache:
+        condition: service_started
+      createbuckets:
+        condition: service_completed_successfully
     restart: unless-stopped
 
   # ── MeshKit IPFS proxy ────────────────────────────────────────────────────
@@ -68,3 +113,6 @@ services:
 networks:
   app_network:
     driver: bridge
+
+volumes:
+  minio_data:

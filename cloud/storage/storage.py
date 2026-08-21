@@ -14,6 +14,9 @@ import logging
 
 aws_access_key = os.environ.get('AWS_ACCESS_KEY_ID')
 aws_secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+# When set, all S3 calls go to this endpoint (e.g. http://minio:9000 for local dev/CI).
+# Leave unset to use real AWS S3.
+aws_endpoint_url = os.environ.get('AWS_ENDPOINT_URL') or None
 # Used only when region discovery fails (no credentials, bucket unreachable, etc.).
 _default_region = os.environ.get('AWS_DEFAULT_REGION', 'us-east-1')
 
@@ -26,14 +29,25 @@ _bucket_regions = {}
 # Single lightweight client used only for region discovery.  Uses the global
 # path-style endpoint so S3 returns 301 + x-amz-bucket-region for any bucket
 # that is not in us-east-1, without requiring s3:GetBucketLocation permission.
-_probe_client = boto3.client(
-    's3',
-    aws_access_key_id=aws_access_key,
-    aws_secret_access_key=aws_secret_key,
-    region_name='us-east-1',
-    endpoint_url='https://s3.amazonaws.com',
-    config=Config(s3={'addressing_style': 'path'}),
-)
+# When using a custom endpoint (MinIO etc.) region discovery is skipped entirely.
+if aws_endpoint_url:
+    _probe_client = boto3.client(
+        's3',
+        aws_access_key_id=aws_access_key,
+        aws_secret_access_key=aws_secret_key,
+        endpoint_url=aws_endpoint_url,
+        region_name='us-east-1',
+        config=Config(s3={'addressing_style': 'path'}),
+    )
+else:
+    _probe_client = boto3.client(
+        's3',
+        aws_access_key_id=aws_access_key,
+        aws_secret_access_key=aws_secret_key,
+        region_name='us-east-1',
+        endpoint_url='https://s3.amazonaws.com',
+        config=Config(s3={'addressing_style': 'path'}),
+    )
 AspiringStorageBucket = "mc2-app-storage-useast1"
 
 print("Starting cloud import")
@@ -103,14 +117,16 @@ def createBucket(bucketname):
 def _discover_region(bucketname):
     """Return the AWS region that owns bucketname.
 
-    Strategy: call HeadBucket against the global path-style endpoint.
+    For custom endpoints (MinIO, LocalStack) region discovery is meaningless —
+    return us-east-1 immediately.
+
+    For real AWS: call HeadBucket against the global path-style endpoint.
     - Non-us-east-1 bucket  → S3 returns 301 with x-amz-bucket-region header.
     - us-east-1 bucket      → S3 returns 200 or 403; header is still present.
     - No credentials / network error → fall back to _default_region.
-
-    No s3:GetBucketLocation permission is needed; the header is returned even
-    for 301/403 responses.
     """
+    if aws_endpoint_url:
+        return 'us-east-1'
     try:
         r = _probe_client.head_bucket(Bucket=bucketname)
         # 200: read BucketRegion from the response dict (always present on 200).
@@ -137,12 +153,14 @@ def _discover_region(bucketname):
 def _resource_for_region(region):
     """Return a cached boto3.resource for the given region."""
     if region not in _resources:
-        _resources[region] = boto3.resource(
-            's3',
+        kwargs = dict(
             aws_access_key_id=aws_access_key,
             aws_secret_access_key=aws_secret_key,
             region_name=region,
         )
+        if aws_endpoint_url:
+            kwargs['endpoint_url'] = aws_endpoint_url
+        _resources[region] = boto3.resource('s3', **kwargs)
     return _resources[region]
 
 
