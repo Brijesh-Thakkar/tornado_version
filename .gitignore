@@ -50,3 +50,5 @@ test-results/
 playwright/.cache/
 
 meshkit-service/.env
+playwright-report/
+test-results/
