@@ -54,7 +54,7 @@ if __name__ == "__main__":
     #createItem("email", data)
     d = getItem("users", "email")
     print(d)
-    print(d['name'],d['email'])
+    print(d['name'], d['email'])
     deleteItem("users", "email")
     d = getItem("users", "email")
     print(d)
