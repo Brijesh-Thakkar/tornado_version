@@ -23,6 +23,7 @@ jobs:
           cp .env.example .env
           # Override with CI-safe values
           sed -i 's/generate_a_random_secret_here/ci-test-cookie-secret-not-real/g' .env
+          cp meshkit-service/.env.example meshkit-service/.env
           docker compose up -d --build
         env:
           COMPOSE_DOCKER_CLI_BUILD: 1
