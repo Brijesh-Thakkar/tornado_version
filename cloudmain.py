@@ -73,6 +73,7 @@ class Application(tornado.web.Application):
             (r"/lostpw",UserLostPasswordHandler),
             (r"/webapp",WebAppHandler),
             (r"/meshkit", MeshkitHandler),
+            (r"/ipfs", IpfsHandler),
             (r"/pwreset",PwResetHandler),
             (r"/dropbox", DropBoxHandler),
             (r"/inapp", InAppHandler),
@@ -1179,6 +1180,7 @@ class DownloadFileHandler(BaseHandler):
 
 
 MESHKIT_BASE = "http://meshkit-service:4000"
+IPFS_LITE_BASE = "http://127.0.0.1:5001"
 
 class MeshkitHandler(BaseHandler):
     def set_default_headers(self):
@@ -1250,6 +1252,65 @@ class MeshkitHandler(BaseHandler):
         except tornado.httpclient.HTTPClientError as e:
             self.set_status(500)
             self.write({"error": str(e)})
+
+
+class IpfsHandler(BaseHandler):
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.set_header("Access-Control-Allow-Headers", "Content-Type")
+
+    def options(self):
+        self.set_status(204)
+        self.finish()
+
+    @tornado.gen.coroutine
+    def post(self):
+        fname = self.get_argument("fname", "sheet.msc")
+        data = self.get_argument("data", "")
+        http = tornado.httpclient.AsyncHTTPClient()
+        try:
+            boundary = uuid.uuid4().hex
+            data_bytes = data.encode("utf-8") if isinstance(data, str) else data
+            fname_bytes = fname.encode("utf-8") if isinstance(fname, str) else fname
+            body = (
+                b"--" + boundary.encode("ascii") + b"\r\n"
+                + b"Content-Disposition: form-data; name=\"file\"; filename=\""
+                + fname_bytes + b"\"\r\n"
+                + b"Content-Type: application/octet-stream\r\n"
+                + b"\r\n"
+                + data_bytes + b"\r\n"
+                + b"--" + boundary.encode("ascii") + b"--\r\n"
+            )
+            req = tornado.httpclient.HTTPRequest(
+                "%s/api/v0/add" % IPFS_LITE_BASE,
+                method="POST",
+                headers={"Content-Type": "multipart/form-data; boundary=%s" % boundary},
+                body=body,
+            )
+            resp = yield http.fetch(req)
+            result = json.loads(resp.body)
+            cid = result["Hash"]
+            self.finish(dict(cid=cid, result="ok"))
+        except tornado.httpclient.HTTPClientError as e:
+            self.set_status(500)
+            self.finish(dict(error=str(e), result="fail"))
+
+    @tornado.gen.coroutine
+    def get(self):
+        cid = self.get_argument("cid")
+        http = tornado.httpclient.AsyncHTTPClient()
+        try:
+            resp = yield http.fetch(
+                "%s/api/v0/cat?arg=%s" % (
+                    IPFS_LITE_BASE, tornado.escape.url_escape(cid)
+                )
+            )
+            data = resp.body.decode("utf-8") if isinstance(resp.body, bytes) else resp.body
+            self.finish(dict(data=data, result="ok"))
+        except tornado.httpclient.HTTPClientError as e:
+            self.set_status(500)
+            self.finish(dict(error=str(e), result="fail"))
 
 
 class IconImgHandler(BaseHandler):
