@@ -59,11 +59,14 @@ services:
       - .env
     environment:
       - MEMCACHE_HOST=memcache
+      - MESHKIT_SIDECAR_URL=http://meshkit-sidecar:5050
     depends_on:
       memcache:
         condition: service_started
       createbuckets:
         condition: service_completed_successfully
+      meshkit-sidecar:
+        condition: service_started
     restart: unless-stopped
 
   # ── Tornado application instance 2 ───────────────────────────────────────
@@ -77,11 +80,24 @@ services:
       - .env
     environment:
       - MEMCACHE_HOST=memcache
+      - MESHKIT_SIDECAR_URL=http://meshkit-sidecar:5050
     depends_on:
       memcache:
         condition: service_started
       createbuckets:
         condition: service_completed_successfully
+      meshkit-sidecar:
+        condition: service_started
+    restart: unless-stopped
+
+  # ── MeshKit IPFS sidecar (REST gateway for SocialCalc save/load) ─────────
+  meshkit-sidecar:
+    build: ./meshkit-sidecar
+    expose:
+      - "5050"
+    env_file: ./meshkit-sidecar/.env
+    networks:
+      - app_network
     restart: unless-stopped
 
   # ── MeshKit IPFS proxy ────────────────────────────────────────────────────
