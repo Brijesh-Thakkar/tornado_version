@@ -50,3 +50,6 @@ test-results/
 playwright/.cache/
 
 meshkit-service/.env
+meshkit-sidecar-kubo/node_modules/
+meshkit-sidecar-kubo/.env
+meshkit-sidecar-kubo/.ipfs/
