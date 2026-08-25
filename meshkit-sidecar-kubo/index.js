@@ -45,15 +45,30 @@ async function start() {
     }
   });
 
+  const RETRIEVE_TIMEOUT_MS = 5000;
+
   // GET /retrieve/:cid — returns raw bytes
-  // Kubo errors don't use the [404] format from S3; match text patterns instead.
+  // Kubo hunts the IPFS network for unknown CIDs and can hang for 20+ seconds.
+  // Promise.race caps the wait at 5 s; a timeout returns 504 immediately so
+  // the caller gets a fast, deterministic error instead of a silent hang.
+  // Note: Promise.race does not cancel the underlying Kubo RPC call — it will
+  // eventually settle on its own after the timeout fires.
   app.get('/retrieve/:cid', async (req, res) => {
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(
+        () => reject(new Error(`retrieve timed out after ${RETRIEVE_TIMEOUT_MS / 1000}s`)),
+        RETRIEVE_TIMEOUT_MS
+      )
+    );
     try {
-      const bytes = await client.retrieve(req.params.cid);
+      const bytes = await Promise.race([client.retrieve(req.params.cid), timeoutPromise]);
       res.setHeader('Content-Type', 'application/octet-stream');
       res.send(Buffer.from(bytes));
     } catch (err) {
       const msg = err.message || '';
+      if (/timed out/i.test(msg)) {
+        return res.status(504).json({ error: msg });
+      }
       const is404 = /not found|does not exist|no link named/i.test(msg);
       res.status(is404 ? 404 : 500).json({ error: msg });
     }

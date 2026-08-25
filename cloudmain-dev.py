@@ -1415,7 +1415,10 @@ class MeshkitKuboSidecarHandler(BaseHandler):
             self.set_header("Content-Type", "application/json")
             self.write(resp.body)
         except tornado.httpclient.HTTPClientError as e:
-            status = 502 if e.code == 599 else 500
+            # 599 = Tornado network error (sidecar unreachable) → 502
+            # 504 = sidecar reported a timeout (e.g. Kubo retrieve hung) → propagate as 504
+            # anything else → 500
+            status = 502 if e.code == 599 else (504 if e.code == 504 else 500)
             logging.error("meshkit-kubo upload error: %s", e)
             self.set_status(status)
             self.write({"error": str(e)})
@@ -1443,7 +1446,9 @@ class MeshkitKuboSidecarHandler(BaseHandler):
                 self.set_status(404)
                 self.write({"error": "not found"})
             else:
-                status = 502 if e.code == 599 else 500
+                # 599 = sidecar unreachable → 502
+                # 504 = sidecar retrieve timed out → propagate as 504
+                status = 502 if e.code == 599 else (504 if e.code == 504 else 500)
                 logging.error("meshkit-kubo retrieve/list error: %s", e)
                 self.set_status(status)
                 self.write({"error": str(e)})
