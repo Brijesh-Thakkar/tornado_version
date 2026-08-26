@@ -86,6 +86,12 @@ class Application(tornado.web.Application):
             (r"/lostpw",UserLostPasswordHandler),
             (r"/webapp",WebAppHandler),
             (r"/meshkit", MeshkitHandler),
+            (r"/meshkit/upload", MeshkitSidecarHandler),
+            (r"/meshkit/retrieve/(.*)", MeshkitSidecarHandler),
+            (r"/meshkit/list", MeshkitSidecarHandler),
+            (r"/meshkit-kubo/upload", MeshkitKuboSidecarHandler),
+            (r"/meshkit-kubo/retrieve/(.*)", MeshkitKuboSidecarHandler),
+            (r"/meshkit-kubo/list", MeshkitKuboSidecarHandler),
             (r"/pwreset",PwResetHandler),
             (r"/dropbox", DropBoxHandler),
             (r"/inapp", InAppHandler),
@@ -1243,6 +1249,8 @@ class DownloadFileHandler(BaseHandler):
 
 
 MESHKIT_BASE = "http://meshkit-service:4000"
+MESHKIT_SIDECAR_URL = os.getenv("MESHKIT_SIDECAR_URL", "http://localhost:5050")
+MESHKIT_KUBO_SIDECAR_URL = os.getenv("MESHKIT_KUBO_SIDECAR_URL", "http://localhost:5051")
 
 class MeshkitHandler(BaseHandler):
     def set_default_headers(self):
@@ -1314,6 +1322,136 @@ class MeshkitHandler(BaseHandler):
         except tornado.httpclient.HTTPClientError as e:
             self.set_status(500)
             self.write({"error": str(e)})
+
+
+class MeshkitSidecarHandler(BaseHandler):
+    """Proxy handler for the meshkit-sidecar Node service (port 5050).
+    Exposes REST-style routes: /meshkit/upload, /meshkit/retrieve/{cid}, /meshkit/list.
+    """
+
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.set_header("Access-Control-Allow-Headers", "Content-Type")
+
+    def options(self, *args):
+        self.set_status(204)
+        self.finish()
+
+    @tornado.gen.coroutine
+    def post(self):
+        # POST /meshkit/upload — forward raw bytes to sidecar
+        http = tornado.httpclient.AsyncHTTPClient()
+        try:
+            req = tornado.httpclient.HTTPRequest(
+                "%s/upload" % MESHKIT_SIDECAR_URL, method="POST",
+                headers={"Content-Type": "application/octet-stream"},
+                body=self.request.body or b""
+            )
+            resp = yield http.fetch(req)
+            self.set_header("Content-Type", "application/json")
+            self.write(resp.body)
+        except tornado.httpclient.HTTPClientError as e:
+            status = 502 if e.code == 599 else 500
+            logging.error("meshkit-sidecar upload error: %s", e)
+            self.set_status(status)
+            self.write({"error": str(e)})
+
+    @tornado.gen.coroutine
+    def get(self, cid=None):
+        # GET /meshkit/retrieve/{cid}  or  GET /meshkit/list
+        http = tornado.httpclient.AsyncHTTPClient()
+        try:
+            if cid is not None:
+                resp = yield http.fetch(
+                    "%s/retrieve/%s" % (MESHKIT_SIDECAR_URL, cid)
+                )
+                self.set_header(
+                    "Content-Type",
+                    resp.headers.get("Content-Type", "application/octet-stream")
+                )
+                self.write(resp.body)
+            else:
+                resp = yield http.fetch("%s/list" % MESHKIT_SIDECAR_URL)
+                self.set_header("Content-Type", "application/json")
+                self.write(resp.body)
+        except tornado.httpclient.HTTPClientError as e:
+            if e.code == 404:
+                self.set_status(404)
+                self.write({"error": "not found"})
+            else:
+                status = 502 if e.code == 599 else 500
+                logging.error("meshkit-sidecar retrieve/list error: %s", e)
+                self.set_status(status)
+                self.write({"error": str(e)})
+
+
+class MeshkitKuboSidecarHandler(BaseHandler):
+    """Proxy handler for the meshkit-sidecar-kubo Node service (port 5051).
+    Kubo/IPFS-daemon backend — parallel to MeshkitSidecarHandler (S3 backend).
+    Routes: /meshkit-kubo/upload, /meshkit-kubo/retrieve/{cid}, /meshkit-kubo/list
+    """
+
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.set_header("Access-Control-Allow-Headers", "Content-Type")
+
+    def options(self, *args):
+        self.set_status(204)
+        self.finish()
+
+    @tornado.gen.coroutine
+    def post(self):
+        # POST /meshkit-kubo/upload — forward raw bytes to sidecar
+        http = tornado.httpclient.AsyncHTTPClient()
+        try:
+            req = tornado.httpclient.HTTPRequest(
+                "%s/upload" % MESHKIT_KUBO_SIDECAR_URL, method="POST",
+                headers={"Content-Type": "application/octet-stream"},
+                body=self.request.body or b""
+            )
+            resp = yield http.fetch(req)
+            self.set_header("Content-Type", "application/json")
+            self.write(resp.body)
+        except tornado.httpclient.HTTPClientError as e:
+            # 599 = Tornado network error (sidecar unreachable) → 502
+            # 504 = sidecar reported a timeout (e.g. Kubo retrieve hung) → propagate as 504
+            # anything else → 500
+            status = 502 if e.code == 599 else (504 if e.code == 504 else 500)
+            logging.error("meshkit-kubo upload error: %s", e)
+            self.set_status(status)
+            self.write({"error": str(e)})
+
+    @tornado.gen.coroutine
+    def get(self, cid=None):
+        # GET /meshkit-kubo/retrieve/{cid}  or  GET /meshkit-kubo/list
+        http = tornado.httpclient.AsyncHTTPClient()
+        try:
+            if cid is not None:
+                resp = yield http.fetch(
+                    "%s/retrieve/%s" % (MESHKIT_KUBO_SIDECAR_URL, cid)
+                )
+                self.set_header(
+                    "Content-Type",
+                    resp.headers.get("Content-Type", "application/octet-stream")
+                )
+                self.write(resp.body)
+            else:
+                resp = yield http.fetch("%s/list" % MESHKIT_KUBO_SIDECAR_URL)
+                self.set_header("Content-Type", "application/json")
+                self.write(resp.body)
+        except tornado.httpclient.HTTPClientError as e:
+            if e.code == 404:
+                self.set_status(404)
+                self.write({"error": "not found"})
+            else:
+                # 599 = sidecar unreachable → 502
+                # 504 = sidecar retrieve timed out → propagate as 504
+                status = 502 if e.code == 599 else (504 if e.code == 504 else 500)
+                logging.error("meshkit-kubo retrieve/list error: %s", e)
+                self.set_status(status)
+                self.write({"error": str(e)})
 
 
 class IconImgHandler(BaseHandler):
