@@ -52,3 +52,6 @@ playwright/.cache/
 meshkit-service/.env
 meshkit-sidecar/node_modules/
 meshkit-sidecar/.env
+meshkit-sidecar-kubo/node_modules/
+meshkit-sidecar-kubo/.env
+meshkit-sidecar-kubo/.ipfs/

@@ -60,12 +60,15 @@ services:
     environment:
       - MEMCACHE_HOST=memcache
       - MESHKIT_SIDECAR_URL=http://meshkit-sidecar:5050
+      - MESHKIT_KUBO_SIDECAR_URL=http://meshkit-sidecar-kubo:5051
     depends_on:
       memcache:
         condition: service_started
       createbuckets:
         condition: service_completed_successfully
       meshkit-sidecar:
+        condition: service_started
+      meshkit-sidecar-kubo:
         condition: service_started
     restart: unless-stopped
 
@@ -81,12 +84,15 @@ services:
     environment:
       - MEMCACHE_HOST=memcache
       - MESHKIT_SIDECAR_URL=http://meshkit-sidecar:5050
+      - MESHKIT_KUBO_SIDECAR_URL=http://meshkit-sidecar-kubo:5051
     depends_on:
       memcache:
         condition: service_started
       createbuckets:
         condition: service_completed_successfully
       meshkit-sidecar:
+        condition: service_started
+      meshkit-sidecar-kubo:
         condition: service_started
     restart: unless-stopped
 
@@ -98,6 +104,41 @@ services:
     env_file: ./meshkit-sidecar/.env
     networks:
       - app_network
+    restart: unless-stopped
+
+  # ── Kubo IPFS daemon (block-storage backend for meshkit-sidecar-kubo) ─────
+  kubo:
+    image: ipfs/kubo:latest
+    expose:
+      - "5001"   # RPC API — reachable by meshkit-sidecar-kubo inside the network
+      - "4001"   # Swarm / P2P
+    environment:
+      - IPFS_PROFILE=server
+    volumes:
+      - kubo_data:/data/ipfs
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD", "ipfs", "id"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    restart: unless-stopped
+
+  # ── MeshKit Kubo sidecar (REST gateway for Kubo-backed IPFS storage) ──────
+  meshkit-sidecar-kubo:
+    build: ./meshkit-sidecar-kubo
+    expose:
+      - "5051"
+    environment:
+      - IPFS_API_URL=http://kubo:5001
+      - MESHKIT_KUBO_SIDECAR_PORT=5051
+    networks:
+      - app_network
+    depends_on:
+      kubo:
+        condition: service_healthy
     restart: unless-stopped
 
   # ── MeshKit IPFS proxy ────────────────────────────────────────────────────
@@ -132,3 +173,4 @@ networks:
 
 volumes:
   minio_data:
+  kubo_data:
