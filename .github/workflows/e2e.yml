@@ -24,6 +24,12 @@ jobs:
           # Override with CI-safe values
           sed -i 's/generate_a_random_secret_here/ci-test-cookie-secret-not-real/g' .env
           cp meshkit-service/.env.example meshkit-service/.env
+          cp meshkit-sidecar/.env.example meshkit-sidecar/.env
+          # Point meshkit-sidecar at the MinIO service already in docker-compose
+          sed -i 's/^MESHKIT_ACCESS_KEY=.*/MESHKIT_ACCESS_KEY=minioadmin/' meshkit-sidecar/.env
+          sed -i 's/^MESHKIT_SECRET_KEY=.*/MESHKIT_SECRET_KEY=minioadmin/' meshkit-sidecar/.env
+          sed -i 's/^MESHKIT_BUCKET=.*/MESHKIT_BUCKET=mc2-app-storage-useast1/' meshkit-sidecar/.env
+          sed -i 's|^MESHKIT_ENDPOINT=.*|MESHKIT_ENDPOINT=http://minio:9000|' meshkit-sidecar/.env
           docker compose up -d --build
         env:
           COMPOSE_DOCKER_CLI_BUILD: 1
