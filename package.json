@@ -8,10 +8,12 @@
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "test:intercepta": "jest tests/interceptaScreening.test.js --runInBand"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",
+    "jest": "^30.5.2",
     "typescript": "^5.0.0"
   }
 }
