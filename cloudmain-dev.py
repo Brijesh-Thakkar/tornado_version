@@ -7,6 +7,10 @@
 #
 
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import subprocess
 import logging
 import os.path
@@ -26,6 +30,7 @@ import uuid
 import json
 import cloud.storage.storage
 import cloud.authenticate.user
+from handlers.risk import RiskProfileHandler
 
 from tornado.options import define, options
 from util.amazon_ses import AmazonSES,EmailMessage
@@ -88,6 +93,7 @@ class Application(tornado.web.Application):
             (r"/register",UserRegisterHandler),
             (r"/lostpw",UserLostPasswordHandler),
             (r"/webapp",WebAppHandler),
+            (r"/api/v1/risk-profile/(.*)", RiskProfileHandler),
             (r"/(?:webapp|api)/(login|register)", WebAppHandler),
             (r"/meshkit", MeshkitHandler),
             (r"/meshkit/upload", MeshkitSidecarHandler),
